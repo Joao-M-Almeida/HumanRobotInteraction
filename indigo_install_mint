@@ -1,0 +1,38 @@
+  #!/bin/bash
+
+sh -c 'echo "deb http://packages.ros.org/ros/ubuntu trusty main" > /etc/apt/sources.list.d/ros-latest.list'
+
+apt-key adv --keyserver hkp://pool.sks-keyservers.net --recv-key 0xB01FA116
+
+apt-get update
+
+apt-get install -y ros-indigo-desktop-full
+
+apt-cache search ros-indigo
+
+rosdep init
+
+apt-get install -y python-rosinstall
+
+apt-get install -y ros-indigo-katana*
+
+apt-get install -y ros-indigo-joy
+
+apt-get install -y ros-indigo-key-teleop
+
+mkdir -p ~/home/Documents/SistAut/
+
+#Add variables to .bashrc
+
+echo "source /opt/ros/indigo/setup.bash" >> ~/.bashrc
+
+echo export ROS_PACKAGE_PATH=/opt/ros/indigo/share:/opt/ros/indigo/stacks:~/home/Documents/SistAut/  >> ~/.bashrc
+
+echo export KATANA_TYPE="katana_300_6m180" >> ~/.bashrc
+
+source ~/.bashrc
+
+rosdep update
+
+rosdep install joy --os=ubuntu:trusty
+

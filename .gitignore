@@ -45,3 +45,8 @@ qtcreator-*
 
 # Catkin custom files
 CATKIN_IGNORE
+
+
+# My ignores
+*.pdf
+*.gv

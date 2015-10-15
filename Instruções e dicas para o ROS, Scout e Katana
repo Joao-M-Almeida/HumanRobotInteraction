@@ -1,0 +1,51 @@
+In UBUNTU:
+sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+
+In MINT:
+
+sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu trusty main" > /etc/apt/sources.list.d/ros-latest.list'
+
+Run:  sudo apt-get install libsdformat1 if ros-indigo-desktop-full : Depends: ros-indigo-simulators but it is not going to be installed
+
+sudo apt-get install ros-indigo-katana-*
+
+export ROS_PACKAGE_PATH=/opt/ros/indigo/share:/opt/ros/indigo/stacks:~/Desktop/SistemasAut
+export KATANA_TYPE="katana_300_6m180"
+
+
+sudo apt-get install ros-jade-joy
+
+
+rosdep install joy --os=ubuntu:trusty
+
+rosmake scout_odometry scout_driver
+
+roslaunch scout_launch scout.launch motor0:=/dev/ttyUSB1 motor1:=/dev/ttyUSB0
+
+rostopic pub /cmd_vel geometry_msgs/Twist -- '[-1.0, 0.0, 0.0]' '[0.0, 0.0, 0.0]'
+
+
+  Katana:
+
+
+
+lsusb: list USB devices
+
+
+http://answers.ros.org/question/195669/katana_driver-connectivity-with-katana-arm-6m180/http://answers.ros.org/question/195669/katana_driver-connectivity-with-katana-arm-6m180/
+
+Para compilar a Katana Native Interface:
+Copiar o ficheiro install-sh e o missing da pasta usr/share/automake-1.x/ para a pasta da biblioteca, correr ./configure e depois make
+
+#Add current directory to ROS_PACKAGE_PATH
+export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:$PWD
+
+
+#Compilar Pacote:
+rosmake Pacote
+
+
+#Criar Link simbolico entre porta série e USB
+ sudo rm /dev/ttyS0
+sudo ln -s /dev/ttyUSB0 /dev/ttyS0
+
