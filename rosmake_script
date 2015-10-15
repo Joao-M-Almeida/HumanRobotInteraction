@@ -5,9 +5,8 @@
 
 rosmake kni
 rosmake katana_teleop
-rosmake katana_description 
+rosmake katana_description
 rosmake katana_tutorials
 rosmake katana_msgs
 
- roslaunch katana katana.launch 
-
+roslaunch katana katana.launch
