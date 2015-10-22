@@ -26,7 +26,7 @@ mkdir -p ~/home/Documents/SistAut/
 
 echo "source /opt/ros/indigo/setup.bash" >> ~/.bashrc
 
-echo export ROS_PACKAGE_PATH=/opt/ros/indigo/share:/opt/ros/indigo/stacks:~/home/Documents/SistAut/  >> ~/.bashrc
+echo export ROS_PACKAGE_PATH=/opt/ros/indigo/share:/opt/ros/indigo/stacks:~/Documents/SistAut/  >> ~/.bashrc
 
 echo export KATANA_TYPE="katana_300_6m180" >> ~/.bashrc
 

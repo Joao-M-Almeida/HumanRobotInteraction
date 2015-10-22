@@ -6,7 +6,7 @@ the skeleton postures.
 
 
 import roslib
-#roslib.load_manifest('ros_skeleton_recorder')
+roslib.load_manifest('ros_skeleton_recorder')
 import rospy
 import tf
 
