@@ -55,25 +55,28 @@ if __name__ == '__main__':
     rate = rospy.Rate(1)
     while not rospy.is_shutdown():
     	
-    	for master in range(1,10):
-			try:
-				st='/head_' + str(master)
-				#print(listener.lookupTransform(BASE_FRAME, st, rospy.Time(0)))
+    	for master in range(1,17):
+			st='/head_' + str(master)
+			if(listener.waitForTransform(BASE_FRAME, st, rospy.Time(), rospy.Duration(0.25))):
 				break
-			except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
-   				continue
+			else:
+				continue
+			#try:
+				#print(listener.lookupTransform(BASE_FRAME, st, rospy.Time(0)))
+				#break
+			#except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
+   				#continue
    		
-    	
+    	if master == 16:
+			print('No master found')
+			continue
     	print(master)		
     	
     	try:
-        	#(trans,rot) = listener.lookupTransform('camera_link', '/camera_rgb_frame', rospy.Time(0))
-            #(trans,rot) = listener.lookupTransform('/openni_depth_frame', '/head_3', rospy.Time(0))
-			for f in range(0,len(FRAMES)):
+        	for f in range(0,len(FRAMES)):
 				st='_' + str(master)
 				coordinates = listener.lookupTransform(BASE_FRAME, FRAMES[f] + st, rospy.Time(0))
 				Coord[f] = coordinates[0]
-            	
             	
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
         	continue
