@@ -1,0 +1,1 @@
+sleep 10;rosbag record /tf --duration=20 -o kinect_bag_file_raw_data.bag
