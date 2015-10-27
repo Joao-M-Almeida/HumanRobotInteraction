@@ -51,8 +51,11 @@ Coord = [
 		[0.0,0.0,0.0],
 		[0.0,0.0,0.0]
 		]
+alfa = 0.0
+beta = 0.0
 
 stdscr = curses.initscr()
+
 
 
 def exit_handler():
@@ -65,8 +68,36 @@ def print_coord():
 		stdscr.addstr(f, 0, string)
 		#print FRAMES[f] , '->', Coord[f]
 	
+	angle_string='Angle alfa\t->\t' + str(alfa)
+	stdscr.addstr(len(FRAMES), 0, angle_string)
+	
+	angle_string='Angle beta\t->\t' + str(beta)
+	stdscr.addstr(len(FRAMES)+1, 0, angle_string)
+	
 	stdscr.refresh()
-        
+	
+def dotproduct(v1, v2):
+	return sum((a*b) for a, b in zip(v1, v2))
+
+def length(v):
+	return math.sqrt(dotproduct(v, v))
+
+def angles():
+	global alfa, beta, gama
+	lsh_elb=[Coord[3][0]-Coord[4][0], Coord[3][1]-Coord[4][1], Coord[3][2]-Coord[4][2]]
+	lhan_elb=[Coord[5][0]-Coord[4][0], Coord[5][1]-Coord[4][1], Coord[5][2]-Coord[4][2]]
+	alfa=math.degrees(math.acos(dotproduct(lsh_elb, lhan_elb) / (length(lsh_elb) * length(lhan_elb))))
+
+	torso_neck=[Coord[2][0]-Coord[1][0], Coord[2][1]-Coord[1][1], Coord[2][2]-Coord[1][2]]
+	elb_lsh=[Coord[4][0]-Coord[3][0], Coord[4][1]-Coord[3][1], Coord[4][2]-Coord[3][2]]
+	beta=math.degrees(math.acos(dotproduct(torso_neck, elb_lsh) / (length(torso_neck) * length(elb_lsh))))
+	
+	torso_neck=[Coord[2][0]-Coord[1][0], Coord[2][1]-Coord[1][1], Coord[2][2]-Coord[1][2]]
+	sholder_neck=[Coord[3][0]-Coord[1][0], Coord[3][1]-Coord[1][1], Coord[3][2]-Coord[1][2]]
+	
+	
+	
+	        
 if __name__ == '__main__':
 	stdscr = curses.initscr()
 	print_coord()
@@ -110,7 +141,9 @@ if __name__ == '__main__':
 				Coord[f] = coordinates[0]
 		except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
 			continue
-
+		
+		angles()
+		#left_angle=1.0
 		print_coord()
 
 		#print("Head_:" + trans + rot)
