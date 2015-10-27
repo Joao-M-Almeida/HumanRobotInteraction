@@ -3,6 +3,9 @@ Informações úties:
     General Files:
         katana_300_6m180.urdf.xacro:
             Ficheiro com as informações todas do katana.
+            
+        _JointMovementGoal.py:
+            Código python automaticamente gerado que explica as mensagens do katana.
 
     ROS Packages:
         joint_state_publisher:
