@@ -1,0 +1,17 @@
+<package>
+  <description brief="katana_control">
+
+     katana_control
+
+  </description>
+  <author>João Miranda de Almeida</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/katana_control</url>
+  <depend package="rospy"/>
+  <depend package="katana"/>
+  <depend package="katana_msgs"/>
+
+</package>
+
+

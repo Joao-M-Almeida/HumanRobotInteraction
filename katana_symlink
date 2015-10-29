@@ -1,0 +1,4 @@
+#!/bin/bash
+
+rm /dev/ttyS0
+ln -s /dev/ttyUSB0 /dev/ttyS0

@@ -1,0 +1,7 @@
+Next Steps:
+    For Katana:
+        - Implement publisher to send Action Goals to the Katana, understand _JointMovementGoal.py
+        - Implement a service that sends katana to a few predefined positions and maybe makes a few movements.
+
+    For Scout:
+        - Implement service to move the scout on input of (x,y) where x and y the amount to move in each direction 

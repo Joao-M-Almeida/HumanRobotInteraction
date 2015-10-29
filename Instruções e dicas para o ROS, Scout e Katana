@@ -44,8 +44,12 @@ export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:$PWD
 #Compilar Pacote:
 rosmake Pacote
 
+#O ROS não encontra um pacote, no directório do pacote:
+export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:$PWD
+rospack profile
+rospack find [pacote]
+
 
 #Criar Link simbolico entre porta série e USB
  sudo rm /dev/ttyS0
 sudo ln -s /dev/ttyUSB0 /dev/ttyS0
-
