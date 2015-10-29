@@ -1,4 +1,11 @@
 #!/usr/bin/env python
+
+
+# How to run:
+#   - cd to katana_control. make
+#   - rosrun katana_control SimpleKatanaPublisher.py
+#
+
 import rospy
 from katana_msgs.msg import JointMovementActionGoal as jmag
 from katana_msgs.msg import JointMovementGoal as jmg
