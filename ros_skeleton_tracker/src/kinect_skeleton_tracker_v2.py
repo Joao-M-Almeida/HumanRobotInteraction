@@ -51,8 +51,13 @@ Coord = [
 		[0.0,0.0,0.0],
 		[0.0,0.0,0.0]
 		]
-alfa = 0.0
-beta = 0.0
+		
+alfa = [0.0,0.0]
+beta = [0.0,0.0]
+gama = [0.0,0.0]
+valfa= 0.0
+vbeta= 0.0
+vgama= 0.0
 
 stdscr = curses.initscr()
 
@@ -74,6 +79,10 @@ def print_coord():
 	angle_string='Angle beta\t->\t' + str(beta)
 	stdscr.addstr(len(FRAMES)+1, 0, angle_string)
 	
+	angle_string='Angle gama\t->\t' + str(gama)
+	stdscr.addstr(len(FRAMES)+2, 0, angle_string)
+	
+	
 	stdscr.refresh()
 	
 def dotproduct(v1, v2):
@@ -84,18 +93,40 @@ def length(v):
 
 def angles():
 	global alfa, beta, gama
+	alfa[1]=alfa[0]
+	beta[1]=beta[0]
+	gama[1]=gama[0]
+	
 	lsh_elb=[Coord[3][0]-Coord[4][0], Coord[3][1]-Coord[4][1], Coord[3][2]-Coord[4][2]]
 	lhan_elb=[Coord[5][0]-Coord[4][0], Coord[5][1]-Coord[4][1], Coord[5][2]-Coord[4][2]]
-	alfa=math.degrees(math.acos(dotproduct(lsh_elb, lhan_elb) / (length(lsh_elb) * length(lhan_elb))))
+	alfa[0]=math.degrees(math.acos(dotproduct(lsh_elb, lhan_elb) / (length(lsh_elb) * length(lhan_elb))))
 
 	torso_neck=[Coord[2][0]-Coord[1][0], Coord[2][1]-Coord[1][1], Coord[2][2]-Coord[1][2]]
 	elb_lsh=[Coord[4][0]-Coord[3][0], Coord[4][1]-Coord[3][1], Coord[4][2]-Coord[3][2]]
-	beta=math.degrees(math.acos(dotproduct(torso_neck, elb_lsh) / (length(torso_neck) * length(elb_lsh))))
+	beta[0]=math.degrees(math.acos(dotproduct(torso_neck, elb_lsh) / (length(torso_neck) * length(elb_lsh))))
 	
-	torso_neck=[Coord[2][0]-Coord[1][0], Coord[2][1]-Coord[1][1], Coord[2][2]-Coord[1][2]]
-	sholder_neck=[Coord[3][0]-Coord[1][0], Coord[3][1]-Coord[1][1], Coord[3][2]-Coord[1][2]]
+	sholderr_sholderl=[Coord[9][0]-Coord[3][0], Coord[9][1]-Coord[3][1], Coord[9][2]-Coord[3][2]]
+	elb_shl=[Coord[4][0]-Coord[3][0], Coord[4][1]-Coord[3][1], Coord[4][2]-Coord[3][2]]
+	gama[0]=math.degrees(math.acos(dotproduct(sholderr_sholderl, elb_shl) / (length(sholderr_sholderl) * length(elb_shl))))
 	
+	valfa=alfa[0]-alfa[1]
+	vbeta=beta[0]-beta[1]
+	vgama=gama[0]-gama[1]
 	
+	disthand=[Coord[4][0]-Coord[3][0], Coord[4][1]-Coord[3][1], Coord[4][2]-Coord[3][2]]
+	
+def waving():
+	angle_string='\t\t'
+	if alfa[0] > 70 and alfa[0]< 120:
+		if beta[0] > 70 and beta[0]< 120:
+			if abs(valfa) < 0.001:   
+				#if abs(valfa) > 1.5*abs(vbeta):
+				angle_string='waving'
+	stdscr.addstr(len(FRAMES)+3, 0, angle_string)
+			
+#def clapping():
+#	if abs(vgama) < 0.001:
+#		if abs(Coord[5][1]-Coord[11][1])<
 	
 	        
 if __name__ == '__main__':
@@ -109,29 +140,29 @@ if __name__ == '__main__':
 	rate = rospy.Rate(10)
 	while not rospy.is_shutdown():
 		#for master in range(1,17):
-			#st='/torso_' + str(master)
+		#	st='/torso_' + str(master)
 
-			#try:
-				#found=listener.waitForTransform(BASE_FRAME, st, rospy.Time(), rospy.Duration(0.2))
+		#	try:
+			#	found=listener.waitForTransform(BASE_FRAME, st, rospy.Time(), rospy.Duration(0.2))
 			#except tf.Exception as e:
-				#print "some tf exception happened", e.args
-				#continue
+			#	print "some tf exception happened", e.args
+			#	continue
 
 			#if found:
-				#break
+			#	break
 			#else:
-				#continue
+			#	continue
 			#try:
-				#print(listener.lookupTransform(BASE_FRAME, st, rospy.Time(0)))
-				#break
+			#	print(listener.lookupTransform(BASE_FRAME, st, rospy.Time(0)))
+			#	break
 			#except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
-				#continue
+			#	continue
 
 		#if master == 16:
-			#print('No master found')
-			#continue
+		#	print('No master found')
+		#	continue
 		
-		master=1
+		#master=1
 		#print(master)		
 
 		try:
@@ -145,7 +176,7 @@ if __name__ == '__main__':
 		angles()
 		#left_angle=1.0
 		print_coord()
-
+		waving()
 		#print("Head_:" + trans + rot)
 
 		rate.sleep()

@@ -1,0 +1,58 @@
+//Waving with right hand
+RULE abs(HandRight.z[0] - Head.z[0]) < 200 THEN HandZHead
+RULE ElbowRight.x[0] > Spine.x[0] & WristRight.x[0] > Spine.x[0] 
+& WristRight.y[0] > ElbowRight.y[0] & abs(WristRight.x[0] - ElbowRight.x[0]) < 50 & HandZHead
+THEN WavingGestureCenter
+RULE ElbowRight.x[0] > Spine.x[0] & WristRight.x[0] > Spine.x[0] 
+& WristRight.y[0] > ElbowRight.y[0] & WristRight.x[0] - ElbowRight.x[0] <= -50 & HandZHead
+THEN WavingGestureLeft
+RULE ElbowRight.x[0] > Spine.x[0] & WristRight.x[0] > Spine.x[0] 
+& WristRight.y[0] > ElbowRight.y[0] & WristRight.x[0] - ElbowRight.x[0] >= 50 & HandZHead
+THEN WavingGestureRight
+RULE sequenceexists("[WavingGestureLeft,2][WavingGestureCenter,2][WavingGestureRight,2]") 
+THEN WavingRight
+RULE sequenceexists("[WavingGestureRight,2][WavingGestureCenter,2][WavingGestureLeft,2]") 
+THEN WavingLeft
+RULE (WavingRight | WavingLeft) & HandZHead THEN Waving!
+
+//PSI gesture, definition is insensitive to rotation
+RULE abs(angle(ShoulderCenter.xyz[0] - ShoulderRight.xyz[0], 
+ElbowRight.xyz[0] - ShoulderRight.xyz[0]) - 140) < 20
+& abs(angle(ElbowRight.xyz[0] - ShoulderRight.xyz[0], 
+ElbowRight.xyz[0] - WristRight.xyz[0]) -90) < 20 
+& distance(WristRight.xyz[0], Head.xyz[0]) < distance(WristRight.xyz[0], HipRight.xyz[0]) 
+THEN RightHandPsi
+RULE abs(angle(ShoulderCenter.xyz[0] - ShoulderLeft.xyz[0], 
+ElbowLeft.xyz[0] - ShoulderLeft.xyz[0]) - 140) < 20 
+& abs(angle(ElbowLeft.xyz[0] - ShoulderLeft.xyz[0], 
+ElbowLeft.xyz[0] - WristLeft.xyz[0]) -90) < 20 
+& distance(WristLeft.xyz[0], Head.xyz[0]) < distance(WristLeft.xyz[0], HipLeft.xyz[0]) 
+THEN LeftHandPsi
+RULE RightHandPsi & LeftHandPsi THEN PsiInsensitive!
+
+//PSI gesture, definition is sensitive to rotation
+RULE ElbowRight.x[0] > Spine.x[0] & WristRight.x[0] > Spine.x[0] 
+& WristRight.y[0] > ElbowRight.y[0] & abs(WristRight.x[0] - ElbowRight.x[0]) < 50 
+& abs(ShoulderRight.y[0] - ElbowRight.y[0]) < 50 THEN RightHandPsi_2
+RULE ElbowLeft.x[0] < Spine.x[0] & WristLeft.x[0] < Spine.x[0] 
+& WristLeft.y[0] > ElbowLeft.y[0] & abs(WristLeft.x[0] - ElbowLeft.x[0]) < 50 
+& abs(ShoulderLeft.y[0] - ElbowLeft.y[0]) < 50 THEN LeftHandPsi_2
+RULE RightHandPsi_2 & LeftHandPsi_2 THEN Psi!
+
+//Select
+RULE Distance(HandRight.xyz[0], HandRight.xyz[1]) < 20 THEN HandRightImmobile
+RULE HandRight.z[0] + 200 < Head.z[0] & (rulepersists(HandRightImmobile, 4, 0.95) | sequenceexists("[Select!,0.5]")) THEN Select!
+
+//Drag
+RULE  Distance(HandRight.xyz[0], HandRight.xyz[1]) >= 10 THEN HandRightMobile
+RULE Select! & HandRightMobile THEN Drag!
+
+//Zoom in
+RULE Distance(HandRight.xyz[0], HandLeft.xyz[0]) > Distance(HandRight.xyz[1], HandLeft.xyz[1]) + 10
+& Distance(HandRight.xyz[1], HandLeft.xyz[1]) > Distance(HandRight.xyz[2], HandLeft.xyz[2]) + 10 THEN SpreadHands
+ RULE HandRight.z[0] + 200 < Head.z[0] & HandLeft.z[0] + 200 < Head.z[0] & SpreadHands THEN ZoomIn!
+ 
+ //Zoom out
+ RULE Distance(HandRight.xyz[0], HandLeft.xyz[0]) + 10 < Distance(HandRight.xyz[1], HandLeft.xyz[1])
+& Distance(HandRight.xyz[1], HandLeft.xyz[1]) + 10 < Distance(HandRight.xyz[2], HandLeft.xyz[2]) THEN ShrinkHands
+ RULE HandRight.z[0] + 200 < Head.z[0] & HandLeft.z[0] + 200 < Head.z[0] & ShrinkHands THEN ZoomOut!
