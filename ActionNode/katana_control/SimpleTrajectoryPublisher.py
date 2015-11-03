@@ -55,11 +55,10 @@ joint_vels = []
 
 def callback(data):
     global read_joint_names
-    global read_joint_names
     global joint_pos
     global joint_vels
     global read_joint_states
-    rospy.loginfo('Just read /joint_states')
+    #rospy.loginfo('Just read /joint_states')
     read_joint_names = data.name
     joint_pos = data.position
     joint_vels = data.velocity
@@ -95,10 +94,14 @@ def katana_traject_ctrl():
     # Create points
     p0 = jtp()
     p0.positions = joint_pos;
-    p0.time_from_start = rospy.Duration(0)
+    joint_pos_original=joint_pos
+    p0.time_from_start = rospy.Time.now()
     p1 = jtp()
-    p1.positions = [0,0,0,0,0,0,0]
-    p1.time_from_start = rospy.Duration(3)
+    p1.positions = [0,2,0,0,0]
+    p1.time_from_start = rospy.Time.now() + rospy.Duration(5)
+    p2 = jtp()
+    p2.positions = joint_pos_original
+    p2.time_from_start = rospy.Time.now() + rospy.Duration(10)
 
 
     # Create the Trajectory Goal
@@ -121,10 +124,22 @@ def katana_traject_ctrl():
 
 
 
-    rate = rospy.Rate(0.1) # 10hz
+    rate = rospy.Rate(0.05) # 10hz
 
 
     while not rospy.is_shutdown():
+        p0 = jtp()
+        p0.positions = joint_pos[0:5];
+        joint_pos_original=joint_pos[0:5]
+        p0.time_from_start = rospy.Time.now()
+        p1 = jtp()
+        p1.positions = [0,2,0,0,0]
+        p1.time_from_start = rospy.Time.now() + rospy.Duration(8)
+        p2 = jtp()
+        p2.positions = joint_pos_original
+        p2.time_from_start = rospy.Time.now() + rospy.Duration(16)
+        traject.joint_names = read_joint_names[0:5]
+        traject.points = [p0,p1,p2]
         h.stamp = rospy.Time.now() # Note you need to call rospy.init_node() before this will work
         g.stamp = rospy.Time.now()
         g.id = 'SimpleKatana trajectory test - ' + str(h.stamp.secs) + ' . ' + str(h.stamp.nsecs)
