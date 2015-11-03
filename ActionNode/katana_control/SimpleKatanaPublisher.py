@@ -29,8 +29,15 @@ def katana_ctrl():
     jmag_msg.header = h
     jmag_msg.goal_id = g
     jmag_msg.goal = goal
-    rospy.loginfo(jmag_msg)
-    pub.publish(jmag_msg)
+    rate = rospy.Rate(0.25) # 10hz
+    while not rospy.is_shutdown():
+        h.stamp = rospy.Time.now() # Note you need to call rospy.init_node() before this will work
+        g.stamp = rospy.Time.now()
+        g.id = 'SimpleKatana test - ' + str(h.stamp.secs) + ' . ' + str(h.stamp.nsecs)
+        goal.jointGoal.position = [-goal.jointGoal.position[0]]
+        rospy.loginfo(jmag_msg)
+        pub.publish(jmag_msg)
+        rate.sleep()
 
 if __name__ == '__main__':
     try:
