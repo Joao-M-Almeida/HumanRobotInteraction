@@ -3,8 +3,32 @@
 
 # How to run:
 #   - cd to katana_control. make
+#        OR
+#   - rosmake katana_control
+#        Then
 #   - rosrun katana_control SimpleKatanaPublisher.py
 #
+
+'''
+std_msgs/Header header
+  uint32 seq
+  time stamp
+  string frame_id
+actionlib_msgs/GoalID goal_id
+  time stamp
+  string id
+katana_msgs/JointMovementGoal goal
+  sensor_msgs/JointState jointGoal
+    std_msgs/Header header
+      uint32 seq
+      time stamp
+      string frame_id
+    string[] name
+    float64[] position
+    float64[] velocity
+    float64[] effort
+
+'''
 
 import rospy
 from katana_msgs.msg import JointMovementActionGoal as jmag

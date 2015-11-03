@@ -1,0 +1,236 @@
+digraph graphname {
+	graph [bb="0,0,1190,474",
+		compound=True,
+		rank=same,
+		rankdir=LR,
+		ranksep=0.2
+	];
+	node [label="\N"];
+	subgraph cluster_katana_arm_controller {
+		graph [bb="404,62,770,353",
+			compound=True,
+			label=katana_arm_controller,
+			lheight=0.21,
+			lp="587,341.5",
+			lwidth=1.72,
+			rank=same,
+			rankdir=LR,
+			ranksep=0.2,
+			style=bold
+		];
+		_katana_arm_controller_state		 [URL=topic_3A_katana_arm_controller_state,
+			height=0.5,
+			label="/katana_arm_controller/state",
+			pos="587,304",
+			shape=box,
+			width=2.3889];
+		_katana_arm_controller_command		 [URL=topic_3A_katana_arm_controller_command,
+			height=0.5,
+			label="/katana_arm_controller/command",
+			pos="587,250",
+			shape=box,
+			width=2.8056];
+		katana_arm_controller_follow_joint_trajectory_action_topics		 [URL=topic_3Akatana_arm_controller_follow_joint_trajectory_action_topics,
+			height=0.5,
+			label="katana_arm_controller/follow_joint_trajectory/action_topics",
+			pos="587,196",
+			shape=box,
+			width=4.7778];
+		katana_arm_controller_joint_movement_action_action_topics		 [URL=topic_3Akatana_arm_controller_joint_movement_action_action_topics,
+			height=0.5,
+			label="katana_arm_controller/joint_movement_action/action_topics",
+			pos="587,142",
+			shape=box,
+			width=4.8472];
+		katana_arm_controller_joint_trajectory_action_action_topics		 [URL=topic_3Akatana_arm_controller_joint_trajectory_action_action_topics,
+			height=0.5,
+			label="katana_arm_controller/joint_trajectory_action/action_topics",
+			pos="587,88",
+			shape=box,
+			width=4.75];
+	}
+	subgraph cluster_katana {
+		graph [bb="306,170,396,245",
+			compound=True,
+			label=katana,
+			lheight=0.21,
+			lp="351,233.5",
+			lwidth=0.50,
+			rank=same,
+			rankdir=LR,
+			ranksep=0.2,
+			style=bold
+		];
+		_katana		 [URL=_katana,
+			height=0.5,
+			label="/katana",
+			pos="351,196",
+			shape=ellipse,
+			width=1.011];
+	}
+	subgraph cluster_gripper_grasp_posture_controller {
+		graph [bb="8,170,298,245",
+			compound=True,
+			label=gripper_grasp_posture_controller,
+			lheight=0.21,
+			lp="153,233.5",
+			lwidth=2.51,
+			rank=same,
+			rankdir=LR,
+			ranksep=0.2,
+			style=bold
+		];
+		gripper_grasp_posture_controller_action_topics		 [URL=topic_3Agripper_grasp_posture_controller_action_topics,
+			height=0.5,
+			label="gripper_grasp_posture_controller/action_topics",
+			pos="153,196",
+			shape=box,
+			width=3.7917];
+	}
+	subgraph cluster_rqt_gui_py_node_15969 {
+		graph [bb="785,391,1001,466",
+			compound=True,
+			label=rqt_gui_py_node_15969,
+			lheight=0.21,
+			lp="893,454.5",
+			lwidth=1.85,
+			rank=same,
+			rankdir=LR,
+			ranksep=0.2,
+			style=bold
+		];
+		_rqt_gui_py_node_15969		 [URL=_rqt_gui_py_node_15969,
+			height=0.5,
+			label="/rqt_gui_py_node_15969",
+			pos="893,417",
+			shape=ellipse,
+			width=2.7623];
+	}
+	subgraph cluster_rosout {
+		graph [bb="1016,218,1102,311",
+			compound=True,
+			label=rosout,
+			lheight=0.21,
+			lp="1059,299.5",
+			lwidth=0.47,
+			rank=same,
+			rankdir=LR,
+			ranksep=0.2,
+			style=bold
+		];
+		_rosout		 [URL=_rosout,
+			height=0.5,
+			label="/rosout",
+			pos="1059,244",
+			shape=ellipse,
+			width=0.97491];
+		_rosout -> _rosout		 [penwidth=1,
+			pos="e,1074.7,260.29 1043.3,260.29 1039.5,270.39 1044.8,280 1059,280 1068.1,280 1073.5,276.06 1075.3,270.57"];
+	}
+	subgraph cluster_robot_state_publisher {
+		graph [bb="796,8,990,83",
+			compound=True,
+			label=robot_state_publisher,
+			lheight=0.21,
+			lp="893,71.5",
+			lwidth=1.64,
+			rank=same,
+			rankdir=LR,
+			ranksep=0.2,
+			style=bold
+		];
+		_robot_state_publisher		 [URL=_robot_state_publisher,
+			height=0.5,
+			label="/robot_state_publisher",
+			pos="893,34",
+			shape=ellipse,
+			width=2.4734];
+	}
+	subgraph cluster_pr2_joint_trajectory_client {
+		graph [bb="778,91,1008,166",
+			compound=True,
+			label=pr2_joint_trajectory_client,
+			lheight=0.21,
+			lp="893,154.5",
+			lwidth=2.01,
+			rank=same,
+			rankdir=LR,
+			ranksep=0.2,
+			style=bold
+		];
+		_pr2_joint_trajectory_client		 [URL=_pr2_joint_trajectory_client,
+			height=0.5,
+			label="/pr2_joint_trajectory_client",
+			pos="893,117",
+			shape=ellipse,
+			width=2.9789];
+	}
+	_katana_arm_controller_command -> _katana	 [penwidth=1,
+		pos="e,374.58,209.81 485.92,241.22 458.91,237.22 429.98,231.41 404,223 397.24,220.81 390.29,217.81 383.77,214.59"];
+	katana_arm_controller_follow_joint_trajectory_action_topics -> _katana	 [penwidth=1,
+		pos="e,386.03,200.93 414.65,202.06 408.13,201.88 401.89,201.66 396.06,201.41"];
+	katana_arm_controller_joint_movement_action_action_topics -> _katana	 [penwidth=1,
+		pos="e,382.62,186.76 482.12,160.07 456.21,164.33 428.77,169.98 404,178 399.97,179.3 395.88,180.9 391.85,182.61"];
+	katana_arm_controller_joint_trajectory_action_action_topics -> _katana	 [penwidth=1,
+		pos="e,361.2,178.65 442.57,106.14 428.93,110.57 415.8,116.37 404,124 387.03,134.97 374.49,153.64 365.98,169.35"];
+	katana_arm_controller_joint_trajectory_action_action_topics -> _pr2_joint_trajectory_client	 [penwidth=1,
+		pos="e,787.67,113.49 707.71,106.03 730.73,108.43 754.77,110.7 777.61,112.65"];
+	_tf	 [URL=topic_3A_tf,
+		height=0.5,
+		label="/tf",
+		pos="1059,34",
+		shape=box,
+		width=0.75];
+	_rosout_agg	 [URL=topic_3A_rosout_agg,
+		height=0.5,
+		label="/rosout_agg",
+		pos="1150,244",
+		shape=box,
+		width=1.1111];
+	_rosout -> _rosout_agg	 [penwidth=1,
+		pos="e,1109.7,244 1094.2,244 1095.9,244 1097.7,244 1099.5,244"];
+	_joint_states	 [URL=topic_3A_joint_states,
+		height=0.5,
+		label="/joint_states",
+		pos="587,34",
+		shape=box,
+		width=1.1389];
+	_joint_states -> _robot_state_publisher	 [penwidth=1,
+		pos="e,803.83,34 628.06,34 670.03,34 737.57,34 793.82,34"];
+	_joint_states -> _pr2_joint_trajectory_client	 [penwidth=1,
+		pos="e,808.06,105.9 628.22,27.58 668.91,23.495 731.18,24.201 770,58 780.08,66.78 768.49,77.602 778,87 784.07,92.997 791.18,97.836 798.84,101.74"];
+	_statistics	 [URL=topic_3A_statistics,
+		height=0.5,
+		label="/statistics",
+		pos="587,417",
+		shape=box,
+		width=0.93056];
+	_statistics -> _rqt_gui_py_node_15969	 [penwidth=1,
+		pos="e,793.44,417 620.53,417 659.19,417 725.68,417 783.19,417"];
+	gripper_grasp_posture_controller_action_topics -> _katana	 [penwidth=1,
+		pos="e,315.93,190.74 289.59,189.71 295.22,189.86 300.65,190.04 305.8,190.25"];
+	_rqt_gui_py_node_15969 -> _rosout	 [penwidth=1,
+		pos="e,1056.8,261.98 971.92,405.92 985.15,401.18 997.86,394.48 1008,385 1039.9,355.2 1051.4,303.78 1055.6,271.96"];
+	_katana -> _katana_arm_controller_state	 [penwidth=1,
+		pos="e,500.6,305.94 358.26,213.76 365.93,232.71 380.84,262.04 404,277 429.43,293.43 460.98,301.4 490.63,304.91"];
+	_katana -> katana_arm_controller_follow_joint_trajectory_action_topics	 [penwidth=1,
+		pos="e,414.65,189.94 386.03,191.07 391.73,190.76 397.98,190.49 404.63,190.26"];
+	_katana -> katana_arm_controller_joint_movement_action_action_topics	 [penwidth=1,
+		pos="e,412.3,157.43 366.01,179.57 374.58,173.22 386.09,166.78 402.6,160.74"];
+	_katana -> katana_arm_controller_joint_trajectory_action_action_topics	 [penwidth=1,
+		pos="e,415.64,99.261 356.12,177.98 362.95,156.48 378.46,122.51 404,106 404.94,105.39 405.89,104.8 406.84,104.21"];
+	_katana -> _rosout	 [penwidth=1,
+		pos="e,1034.3,256.87 351.57,214.12 351.85,248.68 358.05,323.55 404,357 469.76,404.86 690.08,372.12 770,357 866.88,338.67 972.91,288.52 1025.2,261.62"];
+	_katana -> _joint_states	 [penwidth=1,
+		pos="e,545.64,28.253 353.12,177.81 356.04,147.68 366.5,87.76 404,58 440.86,28.75 495.74,25.257 535.6,27.539"];
+	_katana -> gripper_grasp_posture_controller_action_topics	 [penwidth=1,
+		pos="e,289.59,202.29 315.93,201.26 310.97,201.54 305.63,201.77 300,201.97"];
+	_robot_state_publisher -> _tf	 [penwidth=1,
+		pos="e,1032,34 982.24,34 996.17,34 1009.9,34 1021.7,34"];
+	_robot_state_publisher -> _rosout	 [penwidth=1,
+		pos="e,1056.9,225.96 947.17,48.359 968.64,56.55 992.06,68.899 1008,87 1040.3,123.71 1051.8,181.43 1055.8,215.71"];
+	_pr2_joint_trajectory_client -> katana_arm_controller_joint_trajectory_action_action_topics	 [penwidth=1,
+		pos="e,758.22,97.531 818.25,104.08 802.83,102.24 785.94,100.37 768.52,98.578"];
+	_pr2_joint_trajectory_client -> _rosout	 [penwidth=1,
+		pos="e,1038.5,228.87 916.8,134.66 946.54,157.68 998.5,197.92 1030.4,222.64"];
+}
