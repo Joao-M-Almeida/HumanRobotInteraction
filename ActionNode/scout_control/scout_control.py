@@ -38,21 +38,40 @@ def scout_pub_xyt(motion_pub,x=0,y=0,theta=0):
     smm_msg.enable=True
 
 
-    ang_ini = math.acos(y/x) * 180/(2*math.pi) #Initial orientation of the robot
+    if x!=0:
+        ang_ini = math.acos(y/x) * 180/(2*math.pi) #Initial orientation of the robot
+    else:
+        ang_ini = y/(abs(y))*90
 
     if (ang_ini<0):
-        vel_ang=-100 #ter atencao a qual e negativo e qual e positivo
+        vel_ang=-100
     else:
         vel_ang = 100
 
     #First rotation of the robot
     smm_msg.velocity_left= d/r*vel_ang
     smm_msg.velocity_right= d/r*vel_ang
-    motion_pub.publish(smm_msg)
-    time.sleep(5)
+    for i in range(10):
+        motion_pub.publish(smm_msg)
+        time.sleep(0.5)
     #Linear movement of the robot
+    smm_msg.velocity_left=default_scout_vel
+    smm_msg.velocity_right=-default_scout_vel
+    for i in range(10):
+        motion_pub.publish(smm_msg)
+        time.sleep(0.5)
+    #Second rotation of the robot
+    ang2=theta-ang_ini
+    if (ang2<0):
+        vel_ang=-100
+    else:
+        vel_ang = 100
 
-
+    smm_msg.velocity_left= d/r*vel_ang
+    smm_msg.velocity_right= d/r*vel_ang
+    for i in range(10):
+        motion_pub.publish(smm_msg)
+        time.sleep(0.5)
 
     #if x==0 and y==0:
     #    smm_msg.velocity_left=0
