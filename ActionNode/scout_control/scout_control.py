@@ -38,11 +38,12 @@ def scout_pub_xyt(motion_pub,x=0,y=0,theta=0):
     smm_msg.enable=True
 
 
-    ang_ini = math.acos(y/x) * 180/(2*math.pi) '''Initial orientation of the robot'''
+    ang_ini = math.acos(y/x) * 180/(2*math.pi) #Initial orientation of the robot
+
     if (ang_ini<0):
-        vel_ang=-10 '''ter atencao a qual e negativo e qual e positivo'''
+        vel_ang=-100 #ter atencao a qual e negativo e qual e positivo
     else:
-        vel_ang = 10
+        vel_ang = 100
 
     #First rotation of the robot
     smm_msg.velocity_left= d/r*vel_ang
@@ -50,7 +51,7 @@ def scout_pub_xyt(motion_pub,x=0,y=0,theta=0):
     motion_pub.publish(smm_msg)
     time.sleep(5)
     #Linear movement of the robot
-    
+
 
 
     #if x==0 and y==0:
@@ -72,6 +73,6 @@ if __name__ == '__main__':
         scout_pub_xyt(motion_pub,1,0,0)
         while not rospy.is_shutdown():
             time.sleep(0.5)
-            scout_pub_xyt(motion_pub,0,0,0)
+            scout_pub_xyt(motion_pub,1,1,0)
     except rospy.ROSInterruptException:
         pass
