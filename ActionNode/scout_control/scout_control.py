@@ -28,15 +28,38 @@ default_scout_vel = 1500
 import rospy
 from scout_msgs.msg import ScoutMotionMsg as smm
 import time
+import math
+
+d=26.5
+r=10
+
 def scout_pub_xyt(motion_pub,x=0,y=0,theta=0):
     smm_msg=smm()
     smm_msg.enable=True
-    if x==0 :
-        smm_msg.velocity_left=0
-        smm_msg.velocity_right=0
+
+
+    ang_ini = math.acos(y/x) * 180/(2*math.pi) '''Initial orientation of the robot'''
+    if (ang_ini<0):
+        vel_ang=-10 '''ter atencao a qual e negativo e qual e positivo'''
     else:
-        smm_msg.velocity_left=default_scout_vel
-        smm_msg.velocity_right=-default_scout_vel
+        vel_ang = 10
+
+    #First rotation of the robot
+    smm_msg.velocity_left= d/r*vel_ang
+    smm_msg.velocity_right= d/r*vel_ang
+    motion_pub.publish(smm_msg)
+    time.sleep(5)
+    #Linear movement of the robot
+    
+
+
+    #if x==0 and y==0:
+    #    smm_msg.velocity_left=0
+    #    smm_msg.velocity_right=0
+    #else:
+    #    smm_msg.velocity_left=default_scout_vel
+    #    smm_msg.velocity_right=-default_scout_vel
+
     motion_pub.publish(smm_msg)
 
 
