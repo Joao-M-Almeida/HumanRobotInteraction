@@ -1,0 +1,196 @@
+digraph graphname {
+	graph [bb="0,0,792,229",
+		compound=True,
+		rank=same,
+		rankdir=LR,
+		ranksep=0.2
+	];
+	node [label="\N"];
+	subgraph cluster_scout {
+		graph [bb="460,13,568,142",
+			compound=True,
+			label=scout,
+			lheight=0.21,
+			lp="514,130.5",
+			lwidth=0.40,
+			rank=same,
+			rankdir=LR,
+			ranksep=0.2,
+			style=bold
+		];
+		_scout_motors		 [URL=topic_3A_scout_motors,
+			height=0.5,
+			label="/scout/motors",
+			pos="514,93",
+			shape=box,
+			width=1.2639];
+		_scout_motion		 [URL=topic_3A_scout_motion,
+			height=0.5,
+			label="/scout/motion",
+			pos="514,39",
+			shape=box,
+			width=1.2778];
+	}
+	subgraph cluster_joydrive {
+		graph [bb="283,91,383,166",
+			compound=True,
+			label=joydrive,
+			lheight=0.21,
+			lp="333,154.5",
+			lwidth=0.64,
+			rank=same,
+			rankdir=LR,
+			ranksep=0.2,
+			style=bold
+		];
+		_joydrive		 [URL=_joydrive,
+			height=0.5,
+			label="/joydrive",
+			pos="333,117",
+			shape=ellipse,
+			width=1.1735];
+	}
+	subgraph cluster_key_teleop {
+		graph [bb="8,8,128,83",
+			compound=True,
+			label=key_teleop,
+			lheight=0.21,
+			lp="68,71.5",
+			lwidth=0.83,
+			rank=same,
+			rankdir=LR,
+			ranksep=0.2,
+			style=bold
+		];
+		_key_teleop		 [URL=_key_teleop,
+			height=0.5,
+			label="/key_teleop",
+			pos="68,34",
+			shape=ellipse,
+			width=1.4443];
+	}
+	subgraph cluster_motors {
+		graph [bb="606,13,700,88",
+			compound=True,
+			label=motors,
+			lheight=0.21,
+			lp="653,76.5",
+			lwidth=0.54,
+			rank=same,
+			rankdir=LR,
+			ranksep=0.2,
+			style=bold
+		];
+		_motors		 [URL=_motors,
+			height=0.5,
+			label="/motors",
+			pos="653,39",
+			shape=ellipse,
+			width=1.0652];
+	}
+	subgraph cluster_scout_move_base_interface {
+		graph [bb="214,8,452,83",
+			compound=True,
+			label=scout_move_base_interface,
+			lheight=0.21,
+			lp="333,71.5",
+			lwidth=2.10,
+			rank=same,
+			rankdir=LR,
+			ranksep=0.2,
+			style=bold
+		];
+		_scout_move_base_interface		 [URL=_scout_move_base_interface,
+			height=0.5,
+			label="/scout_move_base_interface",
+			pos="333,34",
+			shape=ellipse,
+			width=3.0872];
+	}
+	subgraph cluster_joy {
+		graph [bb="136,128,206,221",
+			compound=True,
+			label=joy,
+			lheight=0.21,
+			lp="171,209.5",
+			lwidth=0.25,
+			rank=same,
+			rankdir=LR,
+			ranksep=0.2,
+			style=bold
+		];
+		_joy		 [URL=_joy,
+			height=0.5,
+			label="/joy",
+			pos="171,154",
+			shape=ellipse,
+			width=0.75];
+		_joy -> _joy		 [penwidth=1,
+			pos="e,187.87,168.42 154.13,168.42 148.25,179.17 153.87,190 171,190 182.78,190 189.12,184.88 190.01,178.19"];
+	}
+	subgraph cluster_odometry_node {
+		graph [bb="576,96,730,171",
+			compound=True,
+			label=odometry_node,
+			lheight=0.21,
+			lp="653,159.5",
+			lwidth=1.19,
+			rank=same,
+			rankdir=LR,
+			ranksep=0.2,
+			style=bold
+		];
+		_odometry_node		 [URL=_odometry_node,
+			height=0.5,
+			label="/odometry_node",
+			pos="653,122",
+			shape=ellipse,
+			width=1.9137];
+	}
+	_scout_motors -> _odometry_node	 [penwidth=1,
+		pos="e,598.93,110.77 559.86,102.5 569.22,104.48 579.26,106.6 589.14,108.69"];
+	_scout_motion -> _motors	 [penwidth=1,
+		pos="e,614.58,39 560.24,39 574.41,39 590.09,39 604.42,39"];
+	_diagnostics	 [URL=topic_3A_diagnostics,
+		height=0.5,
+		label="/diagnostics",
+		pos="333,192",
+		shape=box,
+		width=1.125];
+	_joy -> _diagnostics	 [penwidth=1,
+		pos="e,292.26,186.42 194.42,163.39 200.68,165.78 207.54,168.18 214,170 236.07,176.21 260.96,181.14 282.17,184.75"];
+	_joy -> _joydrive	 [penwidth=1,
+		pos="e,295.43,125.46 196.65,148.3 220.25,142.84 256.46,134.47 285.49,127.75"];
+	_odom	 [URL=topic_3A_odom,
+		height=0.5,
+		label="/odom",
+		pos="765,149",
+		shape=box,
+		width=0.75];
+	_tf	 [URL=topic_3A_tf,
+		height=0.5,
+		label="/tf",
+		pos="765,95",
+		shape=box,
+		width=0.75];
+	_cmd_vel	 [URL=topic_3A_cmd_vel,
+		height=0.5,
+		label="/cmd_vel",
+		pos="171,34",
+		shape=box,
+		width=0.94444];
+	_cmd_vel -> _scout_move_base_interface	 [penwidth=1,
+		pos="e,221.57,34 205.15,34 207.15,34 209.22,34 211.33,34"];
+	_joydrive -> _scout_motion	 [penwidth=1,
+		pos="e,470.15,57.11 375.29,115.8 400.21,113.01 431.09,105.63 452,87 459.46,80.355 453.33,73.431 460,66 460.74,65.174 461.51,64.37 462.31,63.587"];
+	_key_teleop -> _cmd_vel	 [penwidth=1,
+		pos="e,136.8,34 120.09,34 122.31,34 124.52,34 126.72,34"];
+	_motors -> _scout_motors	 [penwidth=1,
+		pos="e,559.86,75.318 623,50.429 607.4,56.581 587.63,64.371 569.29,71.6"];
+	_scout_move_base_interface -> _scout_motion	 [penwidth=1,
+		pos="e,467.98,37.743 442.77,37.038 447.85,37.18 452.84,37.32 457.67,37.455"];
+	_odometry_node -> _odom	 [penwidth=1,
+		pos="e,737.77,142.56 703.85,134.24 711.99,136.23 720.29,138.27 728.01,140.17"];
+	_odometry_node -> _tf	 [penwidth=1,
+		pos="e,737.77,101.44 703.85,109.76 711.99,107.77 720.29,105.73 728.01,103.83"];
+}

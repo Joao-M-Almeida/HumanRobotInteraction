@@ -1,0 +1,16 @@
+<package>
+  <description brief="scout_control">
+
+     scout_control
+
+  </description>
+  <author>João Miranda de Almeida</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/scout_control</url>
+  <depend package="scout_odometry"/>
+  <depend package="scout_driver"/>
+
+</package>
+
+
