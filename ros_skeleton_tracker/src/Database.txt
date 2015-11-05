@@ -1,0 +1,176 @@
+state 2:
+arm stopped horizontal		
+arm stopped vertical		
+forearm stopped		
+state 3:
+arm stopped horizontal		
+arm stopped vertical		
+forearm stopped		
+state 4:
+arm stopped horizontal		
+arm stopped vertical		
+forearm stopped		
+state 5:
+arm stopped horizontal		
+arm moving up		
+forearm stopped		
+state 6:
+arm stopped horizontal		
+arm moving up		
+forearm stopped		
+state 7:
+arm closing		
+arm stopped vertical		
+forearm opening		
+state 8:
+arm stopped horizontal		
+arm stopped vertical		
+forearm stopped		
+state 9:
+arm stopped horizontal		
+arm stopped vertical		
+forearm stopped		
+state 10:
+arm closing		
+arm moving down		
+forearm stopped		
+state 11:
+arm stopped horizontal		
+arm stopped vertical		
+forearm stopped		
+state 12:
+arm stopped horizontal		
+arm stopped vertical		
+forearm stopped		
+state 13:
+arm stopped horizontal		
+arm stopped vertical		
+forearm opening		
+state 14:
+arm stopped horizontal		
+arm stopped vertical		
+forearm opening		
+state 15:
+arm stopped horizontal		
+arm moving down		
+forearm opening		
+state 16:
+arm stopped horizontal		
+arm moving down		
+forearm stopped		
+state 17:
+arm stopped horizontal		
+arm moving down		
+forearm stopped		
+state 18:
+arm stopped horizontal		
+arm moving up		
+forearm closing		
+state 19:
+arm stopped horizontal		
+arm stopped vertical		
+forearm closing		
+state 20:
+arm stopped horizontal		
+arm stopped vertical		
+forearm closing		
+state 21:
+arm stopped horizontal		
+arm stopped vertical		
+forearm closing		
+state 22:
+arm stopped horizontal		
+arm stopped vertical		
+forearm closing		
+state 23:
+arm stopped horizontal		
+arm stopped vertical		
+forearm opening		
+state 24:
+arm stopped horizontal		
+arm stopped vertical		
+forearm opening		
+state 25:
+arm stopped horizontal		
+arm stopped vertical		
+forearm opening		
+state 26:
+arm stopped horizontal		
+arm stopped vertical		
+forearm opening		
+state 27:
+arm stopped horizontal		
+arm moving down		
+forearm opening		
+state 28:
+arm stopped horizontal		
+arm stopped vertical		
+forearm stopped		
+state 29:
+arm stopped horizontal		
+arm stopped vertical		
+forearm stopped		
+state 30:
+arm stopped horizontal		
+arm stopped vertical		
+forearm stopped		
+state 31:
+arm stopped horizontal		
+arm stopped vertical		
+forearm closing		
+state 32:
+arm stopped horizontal		
+arm stopped vertical		
+forearm closing		
+state 33:
+arm stopped horizontal		
+arm moving down		
+forearm opening		
+state 34:
+arm stopped horizontal		
+arm stopped vertical		
+forearm opening		
+state 35:
+arm stopped horizontal		
+arm stopped vertical		
+forearm stopped		
+state 36:
+arm stopped horizontal		
+arm stopped vertical		
+forearm stopped		
+state 37:
+arm stopped horizontal		
+arm stopped vertical		
+forearm stopped		
+state 38:
+arm stopped horizontal		
+arm moving up		
+forearm closing		
+state 39:
+arm stopped horizontal		
+arm stopped vertical		
+forearm closing		
+state 40:
+arm stopped horizontal		
+arm stopped vertical		
+forearm closing		
+state 41:
+arm stopped horizontal		
+arm stopped vertical		
+forearm closing		
+state 42:
+arm closing		
+arm moving down		
+forearm stopped		
+state 43:
+arm stopped horizontal		
+arm stopped vertical		
+forearm closing		
+state 44:
+arm stopped horizontal		
+arm stopped vertical		
+forearm closing		
+state 45:
+arm stopped horizontal		
+arm stopped vertical		
+forearm closing		

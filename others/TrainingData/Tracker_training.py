@@ -80,9 +80,9 @@ if __name__ == '__main__':
 	stdscr = curses.initscr()
 	print_coord()
 	atexit.register(exit_handler)
-	
+
 	file_out = open('Database.txt', 'a')
-	
+
 	rospy.init_node('kinect_tracking')
 
 	listener = tf.TransformListener()
@@ -135,7 +135,7 @@ if __name__ == '__main__':
 
 		            vector_hand[i] = Coord_3D[i][5][2] - Coord_3D[i][11][2]  #Diferenca entre maos#
 		            vector_shou[i] = Coord_3D[i][3][2] - Coord_3D[i][9][2]   #Diferenca entre ombros#
-		        
+
 		        if(numpy.mean(Coord_3D[0:30][5][2]) > numpy.mean(Coord_3D[0:30][0][2])):
 		            higher = 1 #-> Hands higher than head"
 		        else:
@@ -146,7 +146,7 @@ if __name__ == '__main__':
 		        Database[2] = numpy.mean(vector_shou) #Media Z Altura dos ombros#
 		        Database[3] = higher                  #Maos  Z acima da cabeca#
 
-		        file_out.write(str(Database) + '\n')
+		        file_out.write(str(Database[0]) + ',' + str(Database[1]) + ',' + str(Database[2]) + ',' + str(Database[3]) + '\n')
 		except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
 		    continue
 
