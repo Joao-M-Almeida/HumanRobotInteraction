@@ -23,8 +23,11 @@ Notes:
 '''
 
 default_scout_vel = 1500
-d=26.5
-r=10
+d = 26.5
+r = 10
+publish_rate = 0.25
+dist_threshold = 0.1
+angle_threshold = 0.2
 
 import rospy
 from scout_msgs.msg import ScoutMotionMsg as smm
@@ -50,19 +53,31 @@ x_at_command = 0
 y_at_command = 0
 t_at_command = 0
 
+counter = 0
+
 my_lock = threading.Lock()
+
+first_rot = False
+deslocation = False
+last_rot = False
 
 def scout_publisher(motion_pub):
     global my_lock
+    global publish_rate
     while(True):
         smm_msg=smm()
         smm_msg.enable=True
         my_lock.acquire()
-        smm_msg.velocity_left = scout_left_vel
-        smm_msg.velocity_right = scout_right_vel
+        if counter > 0:
+            smm_msg.velocity_left = scout_left_vel
+            smm_msg.velocity_right = scout_right_vel
+            counter-=1
+        else:
+            mm_msg.velocity_left = scout_left_vel
+            smm_msg.velocity_right = scout_right_vel
         my_lock.release()
         motion_pub.publish(smm_msg)
-        time.sleep(0.25)
+        time.sleep(publish_rate)
 
 '''
 def scout_pub_xyt(motion_pub,x=0,y=0,theta=0):
@@ -146,6 +161,10 @@ def command_process(data):
     x_at_command = scout_x
     y_at_command = scout_y
     t_at_command = rpy[2]
+    first_rot = False
+    deslocation = False
+    last_rot = False
+
 
     # Generate velocity information
     scout_left_vel = 200
@@ -154,6 +173,45 @@ def command_process(data):
     my_lock.release()
 
     rospy.loginfo('command received (x,y,t) = ( ' + str(data.x) + ', ' + str(data.y) + ', ' + str(data.theta) + ')')
+
+def scout_controller():
+    global rpy
+    global scout_x
+    global scout_y
+    global scout_left_vel
+    global scout_right_vel
+    global command_x
+    global command_y
+    global command_t
+    global x_at_command
+    global y_at_command
+    global t_at_command
+    global counter
+    #global dist_threshold
+    #global angle_threshold
+
+    #if math.pow(scout_x - (x_at_command + command_x),2) + math.pow(scout_y - (y_at_command + command_y),2) < math.pow(threshold,2):
+        # Already at final postion
+    #    if (rpy[2] - ())
+
+    if  not (first_rot and counter == 0):
+        # Hasn't done the First rotation
+        #TODO
+        # Set velocities and counter accordingly to the desired destination
+
+        first_rot = True
+    elif not (deslocation and counter == 0):
+        # Hasn't done the deslocation
+        #TODO
+        # Set velocities and counter accordingly to the desired distance
+
+        deslocation = True
+    elif not (last_rot and counter == 0):
+        # Hasn't done the last rotation
+        #TODO
+        # Set velocities and counter accordingly to the desired final orientation
+
+        last_rot = True
 
 
 if __name__ == '__main__':
@@ -164,8 +222,10 @@ if __name__ == '__main__':
         rospy.Subscriber('/odom', Odometry, odom_process)
         rospy.Subscriber('/scout_commands', Pose2D, command_process)
         scout_pub = threading.Thread(target=scout_publisher,args=(motion_pub,))
+        scout_ctrl = threading.Thread(target=scout_controller)
         time.sleep(2)
         scout_pub.start()
+        scout_ctrl.start()
         rospy.spin()
     except rospy.ROSInterruptException:
         pass
