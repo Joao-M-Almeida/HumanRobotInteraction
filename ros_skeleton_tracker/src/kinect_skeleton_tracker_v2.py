@@ -296,12 +296,14 @@ if __name__ == '__main__':
         #   continue
 
         master=1
-        #print(master)
 
         try:
             for f in range(0,len(FRAMES)):
                 st='_' + str(master)
                 coordinates = listener.lookupTransform(BASE_FRAME, FRAMES[f] + st, rospy.Time(0))
+                #delete oldest & append to 3d array
+                #apply median filter
+                #coordinates[0] = filtered results
                 Coord[f] = coordinates[0]
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
             continue
