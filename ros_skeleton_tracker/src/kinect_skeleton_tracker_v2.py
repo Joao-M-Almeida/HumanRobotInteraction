@@ -101,6 +101,9 @@ flag1=0
 flag2=0
 stdscr = curses.initscr()
 
+position=[0.0,0.0]
+vel=[0.0,0.0]
+acel=0.0
 
 
 def exit_handler():
@@ -189,86 +192,62 @@ def angles():
 
     #disthand=[Coord[4][0]-Coord[3][0], Coord[4][1]-Coord[3][1], Coord[4][2]-Coord[3][2]]
 
-# def waving():
-    # angle_string='\t\t'
-    # if alfa[0] > 70 and alfa[0]< 120:
-        # if beta[0] > 70 and beta[0]< 120:
-            # if abs(valfa) < 0.001:
-                # #if abs(valfa) > 1.5*abs(vbeta):
-                # angle_string='waving'
-    # stdscr.addstr(len(FRAMES)+3, 0, angle_string)
+def waving():
+    angle_string='\t\t'
+    global flag_left
+    global flag_rigth
+    if beta[0] > 70 and beta[0]< 120:
+        if valfa[0]<0:
+            flag_rigth = 1
+            if flag_left == 1:
+                angle_string='waving'
+            flag_left = 0
 
-def forearm():
-    global valfa
-    global state_forearm
-    global flag2
-    if abs(valfa[0]) < 3:
-        state_forearm='forearm stopped\t\t'
-        flag2=flag2+1
-    else:
-        if valfa[0] < 0:
-            state_forearm='forearm closing\t\t'
-            flag2=0
         if valfa[0] > 0:
-            state_forearm='forearm opening\t\t'
-            flag2=0
-
-    #string1='The forearm is ' + str(state_forearm)
-    stdscr.addstr(len(FRAMES)+9, 0, state_forearm)
-    stdscr.refresh()
-
-
-def arm():
-    global vbeta, vgama
-    global flag, flag1
-    global state_arm, state_arm2
-    if abs(vbeta[0]) < 3:
-        state_arm='arm stopped vertical\t\t'
-        flag=flag+1
+            flag_left = 1
+            if flag_rigth == 1:
+                angle_string='waving'
+            flag_rigth = 0
     else:
-        if vbeta[0] > 0:
-            state_arm='arm moving up\t\t'
-            flag=0
-        if vbeta[0] < 0:
-            state_arm='arm moving down\t\t'
-            flag=0
+        flag_left=0
+        flag_rigth=0
 
-    if abs(vgama[0]) < 3:
-        state_arm2='arm stopped horizontal\t\t'
-        flag1=flag1+1
+    stdscr.addstr(len(FRAMES)+12, 0, angle_string)
+
+def walk():
+    position[1]=position[0]
+    position[0]=(Coord[2][0]+ Coord[6][0]+ Coord[12][0]+ Coord[1][0])/4
+
+    vel[1]=vel[0]
+    vel[0]=position[0]-position[1]
+
+    acel=vel[0]-vel[1]
+
+    p=str(position)
+
+    if vel[0]>0.015:
+        stdscr.addstr(len(FRAMES)+7, 0, 'walking backward')
+    elif vel[0]<-0.015:
+        stdscr.addstr(len(FRAMES)+7, 0, 'walking forward')
     else:
-        if vgama[0] > 0:
-            state_arm2='arm opening\t\t'
-            flag1=0
-        if vgama[0] < 0:
-            state_arm2='arm closing\t\t'
-            flag1=0
+        stdscr.addstr(len(FRAMES)+7, 0, 'stopped\t\t')
 
-    stdscr.addstr(len(FRAMES)+7, 0, state_arm)
-    stdscr.addstr(len(FRAMES)+8, 0, state_arm2)
-    stdscr.refresh()
+	stdscr.addstr(len(FRAMES)+8, 0, p)
 
-def state():
-    global vgama, vbeta, valfa, stat
-    global flag, flag1, flag2
-    global file_out
-    global state_arm, state_arm2, state_forearm
-    if abs(vgama[0]) < 3 and flag1==1:
-        stat=stat+1
-        frase='state '+ str(stat) + ':\n' + str(state_arm2) + '\n' + str(state_arm) + '\n' + str(state_forearm) + '\n'
-        file_out.write(frase)
-    if abs(vbeta[0]) < 3 and flag==1:
-        stat=stat+1
-        frase='state '+ str(stat) + ':\n' + str(state_arm2) + '\n' + str(state_arm) + '\n' + str(state_forearm) + '\n'
-        file_out.write(frase)
-    if abs(valfa[0]) < 3 and flag2==1:
-        stat=stat+1
-        frase='state '+ str(stat) + ':\n' + str(state_arm2) + '\n' + str(state_arm) + '\n' + str(state_forearm) + '\n'
-        file_out.write(frase)
+def hand():
+	if vbeta[0] > 5:
+		stdscr.addstr(len(FRAMES)+9, 0, 'arm moving up\t\t')
+	elif vbeta[0] < 5:
+		stdscr.addstr(len(FRAMES)+9, 0, 'arm moving down\t\t')
+	if valfa[0] > 5:
+		stdscr.addstr(len(FRAMES)+10, 0, 'openning arm\t\t')
+	elif valfa[0] < 5:
+		stdscr.addstr(len(FRAMES)+10, 0, 'closing arm\t\t')
 
-    #string2='The arm is ' + str(state_arm) + ' and ' + str(state_arm2)
-
-
+	if Coord[5][2] > Coord[4][2]:
+		stdscr.addstr(len(FRAMES)+11, 0, 'Hand above elbow')
+	elif Coord[5][2] < Coord[4][2]:
+		stdscr.addstr(len(FRAMES)+11, 0, 'Hand under elbow')
 
 
 if __name__ == '__main__':
@@ -307,7 +286,7 @@ if __name__ == '__main__':
         #   print('No master found')
         #   continue
 
-        master=3
+        master=2
 
         try:
             for f in range(0,len(FRAMES)):
@@ -329,7 +308,9 @@ if __name__ == '__main__':
         angles()
 
         print_coord()
-        #waving()
+        waving()
+        walk()
+        hand()
         #forearm()
         #arm()
         #state()
