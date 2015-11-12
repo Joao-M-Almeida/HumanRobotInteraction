@@ -172,6 +172,8 @@ def length(v):
 
 def angles():
     global alfa, beta, gama
+    global valfa, vbeta, vgama
+    global aalfa, abeta, agama
     alfa[1]=alfa[0]
     beta[1]=beta[0]
     gama[1]=gama[0]
@@ -217,22 +219,27 @@ def angles():
     #disthand=[Coord[4][0]-Coord[3][0], Coord[4][1]-Coord[3][1], Coord[4][2]-Coord[3][2]]
 
 def waving(publ):
-    temp = 'no wave'
+    temp = ''
     global wave_string
     global flag_left
     global flag_rigth
     if beta[0] > 70 and beta[0]< 120:
-        if valfa[0] < 0:
+        if valfa[0] < -5:
             flag_rigth = 1
             if flag_left == 1:
                 temp='waving'
+            #else:
+                #temp='no wave'
             flag_left = 0
-
-        if valfa[0] > 0:
+        elif valfa[0] > 5:
             flag_left = 1
             if flag_rigth == 1:
                 temp='waving'
+            #else:
+                #temp='no wave'
             flag_rigth = 0
+        else:
+            temp='no wave'
     else:
         flag_left=0
         flag_rigth=0
@@ -240,7 +247,7 @@ def waving(publ):
 
     if wave_string!=temp:
         wave_string=temp
-        stdscr.addstr(len(FRAMES)+12, 0, wave_string)
+        stdscr.addstr(len(FRAMES)+12, 0, wave_string + '\t\t')
         publ.publish(wave_string)
 
 def walk(publ):
@@ -254,16 +261,16 @@ def walk(publ):
 
     #acel=vel[0]-vel[1]
 
-    if vel[0]>0.015:
+    if vel[0]>0.1:
         temp = 'walking backward'
-    elif vel[0]<-0.015:
+    elif vel[0]<-0.1:
         temp = 'walking forward'
     else:
         temp = 'no walking'
 
     if walk_string!=temp:
         walk_string=temp
-        stdscr.addstr(len(FRAMES)+7, 0, walk_string)
+        stdscr.addstr(len(FRAMES)+7, 0, walk_string+'\t\t')
         publ.publish(walk_string)
 
 def hand(publ):
@@ -271,37 +278,37 @@ def hand(publ):
     global string_arm1
     global string_hand
     temp=''
-    if abs((vbeta[0] + vbeta[1])/2) < 2:
-        temp='arm stopped'
-    elif vbeta[0] > 2:
+    if vbeta[0] > 10:
         temp='arm moving up'
-    elif vbeta[0] < -2:
+    elif vbeta[0] < -10:
         temp='arm moving down'
+    else:
+        temp='arm stopped'
 
     if string_arm!=temp:
         string_arm=temp
-        stdscr.addstr(len(FRAMES)+9, 0, string_arm)
+        stdscr.addstr(len(FRAMES)+9, 0, string_arm + '\t\t')
         publ.publish(string_arm)
 
     temp=''
-    if (valfa[0] + valfa[1]) < 4:
+    if valfa[0] > 10:
+        temp='opening forearm'
+    elif valfa[0] < -10:
+        temp='closing forearm'
+    else:
         temp='forearm stopped'
-    if valfa[0] > 2:
-        temp='openning arm'
-    elif valfa[0] < -2:
-        temp='closing arm'
 
     if string_arm1!=temp:
         string_arm1=temp
-        stdscr.addstr(len(FRAMES)+10, 0, string_arm1)
+        stdscr.addstr(len(FRAMES)+10, 0, string_arm1 + '\t\t')
         publ.publish(string_arm1)
 
 
     temp=''
     if Coord[5][2] > Coord[4][2]:
-        temp='Hand above elbow'
+        temp='hand above elbow'
     else:
-        temp='Hand under elbow'
+        temp='hand under elbow'
 
     if string_hand!=temp:
         string_hand=temp
@@ -346,7 +353,6 @@ if __name__ == '__main__':
 
 
     file_out = open('Database.txt', 'a')
-    gest_publ.publish('Ahoy!')
 
     time_coord=[[[0,0,0] for t in range(MEDIANSIZE)] for i in range(FRAME_COUNT)]
 
