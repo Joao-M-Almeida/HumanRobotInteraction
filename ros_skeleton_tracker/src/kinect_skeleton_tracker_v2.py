@@ -10,6 +10,8 @@ import rospy
 import tf
 import math
 import geometry_msgs.msg
+import std_msgs.msg
+from ros_skeleton_tracker.msg import pose_msg
 import time
 import numpy as np
 #debug stuff
@@ -101,9 +103,31 @@ flag1=0
 flag2=0
 stdscr = curses.initscr()
 
-position=[0.0,0.0]
+position=[0.0,0.0,0.0,0.0]
 vel=[0.0,0.0]
 acel=0.0
+wave_string=' '
+walk_string=' '
+string_arm=' '
+string_arm1=' '
+string_walk=' '
+string_hand=' '
+
+class gesture_publisher:
+    pub = rospy.Publisher('/gestures', pose_msg, queue_size=10)
+    gestures = pose_msg()
+
+    def __init__(self):
+        #pub = rospy.Publisher('/gestures', pose_msg, queue_size=10)
+        #gestures = pose_msg()
+        self.gestures.header.stamp = rospy.Time.now()
+        self.gestures.gesture='ahoy!'
+        self.pub.publish(self.gestures)
+
+    def publish(self, message):
+        self.gestures.header.stamp = rospy.Time.now()
+        self.gestures.gesture=message
+        self.pub.publish(self.gestures)
 
 
 def exit_handler():
@@ -148,6 +172,8 @@ def length(v):
 
 def angles():
     global alfa, beta, gama
+    global valfa, vbeta, vgama
+    global aalfa, abeta, agama
     alfa[1]=alfa[0]
     beta[1]=beta[0]
     gama[1]=gama[0]
@@ -192,63 +218,128 @@ def angles():
 
     #disthand=[Coord[4][0]-Coord[3][0], Coord[4][1]-Coord[3][1], Coord[4][2]-Coord[3][2]]
 
-def waving():
-    angle_string='\t\t'
+def waving(publ):
+    temp = ''
+    global wave_string
     global flag_left
     global flag_rigth
     if beta[0] > 70 and beta[0]< 120:
-        if valfa[0]<0:
+        if valfa[0] < -5:
             flag_rigth = 1
             if flag_left == 1:
-                angle_string='waving'
+                temp='waving'
+            #else:
+                #temp='no wave'
             flag_left = 0
-
-        if valfa[0] > 0:
+        elif valfa[0] > 5:
             flag_left = 1
             if flag_rigth == 1:
-                angle_string='waving'
+                temp='waving'
+            #else:
+                #temp='no wave'
             flag_rigth = 0
+        else:
+            temp='no wave'
     else:
         flag_left=0
         flag_rigth=0
+        temp='no wave'
 
-    stdscr.addstr(len(FRAMES)+12, 0, angle_string)
+    if wave_string!=temp:
+        wave_string=temp
+        stdscr.addstr(len(FRAMES)+12, 0, wave_string + '\t\t')
+        publ.publish(wave_string)
 
-def walk():
-    position[1]=position[0]
+def walk(publ):
+    temp=''
+    global walk_string
+    position[1:4]=position[0:3]
     position[0]=(Coord[2][0]+ Coord[6][0]+ Coord[12][0]+ Coord[1][0])/4
 
-    vel[1]=vel[0]
-    vel[0]=position[0]-position[1]
+    #vel[1]=vel[0]
+    vel[0]=position[0]-position[3]
 
-    acel=vel[0]-vel[1]
+    #acel=vel[0]-vel[1]
 
-    p=str(position)
-
-    if vel[0]>0.015:
-        stdscr.addstr(len(FRAMES)+7, 0, 'walking backward')
-    elif vel[0]<-0.015:
-        stdscr.addstr(len(FRAMES)+7, 0, 'walking forward')
+    if vel[0]>0.1:
+        temp = 'walking backward'
+    elif vel[0]<-0.1:
+        temp = 'walking forward'
     else:
-        stdscr.addstr(len(FRAMES)+7, 0, 'stopped\t\t')
+        temp = 'no walking'
 
-	stdscr.addstr(len(FRAMES)+8, 0, p)
+    if walk_string!=temp:
+        walk_string=temp
+        stdscr.addstr(len(FRAMES)+7, 0, walk_string+'\t\t')
+        publ.publish(walk_string)
 
-def hand():
-	if vbeta[0] > 5:
-		stdscr.addstr(len(FRAMES)+9, 0, 'arm moving up\t\t')
-	elif vbeta[0] < 5:
-		stdscr.addstr(len(FRAMES)+9, 0, 'arm moving down\t\t')
-	if valfa[0] > 5:
-		stdscr.addstr(len(FRAMES)+10, 0, 'openning arm\t\t')
-	elif valfa[0] < 5:
-		stdscr.addstr(len(FRAMES)+10, 0, 'closing arm\t\t')
+def hand(publ):
+    global string_arm
+    global string_arm1
+    global string_hand
+    temp=''
+    if vbeta[0] > 10:
+        temp='arm moving up'
+    elif vbeta[0] < -10:
+        temp='arm moving down'
+    else:
+        temp='arm stopped'
 
-	if Coord[5][2] > Coord[4][2]:
-		stdscr.addstr(len(FRAMES)+11, 0, 'Hand above elbow')
-	elif Coord[5][2] < Coord[4][2]:
-		stdscr.addstr(len(FRAMES)+11, 0, 'Hand under elbow')
+    if string_arm!=temp:
+        string_arm=temp
+        stdscr.addstr(len(FRAMES)+9, 0, string_arm + '\t\t')
+        publ.publish(string_arm)
 
+    temp=''
+    if valfa[0] > 10:
+        temp='opening forearm'
+    elif valfa[0] < -10:
+        temp='closing forearm'
+    else:
+        temp='forearm stopped'
+
+    if string_arm1!=temp:
+        string_arm1=temp
+        stdscr.addstr(len(FRAMES)+10, 0, string_arm1 + '\t\t')
+        publ.publish(string_arm1)
+
+
+    temp=''
+    if Coord[5][2] > Coord[4][2]:
+        temp='hand above elbow'
+    else:
+        temp='hand under elbow'
+
+    if string_hand!=temp:
+        string_hand=temp
+        stdscr.addstr(len(FRAMES)+11, 0, string_hand)
+        publ.publish(string_hand)
+
+
+'''def hand():
+    handbyte=0
+    if vbeta[0] > 5:
+        stdscr.addstr(len(FRAMES)+9, 0, 'arm moving up\t\t')
+        handbyte=handbyte+1
+    elif vbeta[0] < 5:
+        stdscr.addstr(len(FRAMES)+9, 0, 'arm moving down\t\t')
+        handbyte=handbyte+2
+    if valfa[0] > 5:
+        stdscr.addstr(len(FRAMES)+10, 0, 'openning arm\t\t')
+        handbyte=handbyte+4
+    elif valfa[0] < 5:
+        stdscr.addstr(len(FRAMES)+10, 0, 'closing arm\t\t')
+        handbyte=handbyte+8
+
+    if Coord[5][2] > Coord[4][2]:
+        stdscr.addstr(len(FRAMES)+11, 0, 'Hand above elbow')
+        handbyte=handbyte+16
+    elif Coord[5][2] < Coord[4][2]:
+        stdscr.addstr(len(FRAMES)+11, 0, 'Hand under elbow')
+        handbyte=handbyte+32
+
+    return handbyte
+'''
 
 if __name__ == '__main__':
     stdscr = curses.initscr()
@@ -256,37 +347,20 @@ if __name__ == '__main__':
     atexit.register(exit_handler)
     rospy.init_node('kinect_tracking')
 
+    gest_publ=gesture_publisher()
+    #pub = rospy.Publisher('/gestures', pose_msg, queue_size=10)
+    #gestures = pose_msg()
+
+
     file_out = open('Database.txt', 'a')
+
     time_coord=[[[0,0,0] for t in range(MEDIANSIZE)] for i in range(FRAME_COUNT)]
 
     listener = tf.TransformListener()
 
     rate = rospy.Rate(10)
     while not rospy.is_shutdown():
-        #for master in range(1,17):
-        #   st='/torso_' + str(master)
-
-        #   try:
-            #   found=listener.waitForTransform(BASE_FRAME, st, rospy.Time(), rospy.Duration(0.2))
-            #except tf.Exception as e:
-            #   print "some tf exception happened", e.args
-            #   continue
-
-            #if found:
-            #   break
-            #else:
-            #   continue
-            #try:
-            #   print(listener.lookupTransform(BASE_FRAME, st, rospy.Time(0)))
-            #   break
-            #except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
-            #   continue
-
-        #if master == 16:
-        #   print('No master found')
-        #   continue
-
-        master=2
+        master=1
 
         try:
             for f in range(0,len(FRAMES)):
@@ -308,12 +382,14 @@ if __name__ == '__main__':
         angles()
 
         print_coord()
-        waving()
-        walk()
-        hand()
+        waving(gest_publ)
+
+        walk(gest_publ)
+
+        hand(gest_publ)
+
         #forearm()
         #arm()
         #state()
-
 
         rate.sleep()
