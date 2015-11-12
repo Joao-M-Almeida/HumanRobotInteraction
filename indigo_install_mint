@@ -20,6 +20,14 @@ apt-get install -y ros-indigo-joy
 
 apt-get install -y ros-indigo-key-teleop
 
+apt-get install -y ros-indigo-move-base*
+
+apt-get install -y ros-indigo-amcl
+
+apt-get install ros-indigo-map-server
+
+apt-get install -y ros-indigo-fake-localization 
+
 mkdir -p ~/home/Documents/SistAut/
 
 #Add variables to .bashrc
@@ -35,4 +43,3 @@ source ~/.bashrc
 rosdep update
 
 rosdep install joy --os=ubuntu:trusty
-

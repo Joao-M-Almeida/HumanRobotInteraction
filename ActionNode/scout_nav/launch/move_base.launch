@@ -1,0 +1,13 @@
+<launch>
+
+# <include file="$(find amcl)/examples/amcl_diff.launch" />
+
+	<node pkg="move_base" type="move_base" name="Scout_move_base">
+		<rosparam file="$(find scout_nav)/config/move_base.yaml" command="load"/>
+		<rosparam file="$(find scout_nav)/config/costmap_common_params.yaml" command="load" />
+		<rosparam file="$(find scout_nav)/config/global_costmap_params.yaml" command="load" ns="global_costmap" />
+		<rosparam file="$(find scout_nav)/config/local_costmap_params.yaml" command="load"  ns="local_costmap" />
+		<rosparam file="$(find scout_nav)/config/base_local_planner_params.yaml" command="load"/>
+	</node>
+
+</launch>
