@@ -10,9 +10,10 @@
     <param name="port1" value="$(arg motor1)"/>
   </node>
   <!--node name="sensors"  pkg="scout_driver"  type="sensors"  output="screen"/-->
+  <!--
   <node name="joy"      pkg="joy"           type="joy_node"  respawn="true"  output="screen"/>
-  <node name="joydrive" pkg="scout_driver"  type="joydrive"/>
-  
+  <node name="joydrive" pkg="scout_driver"  type="joydrive"/>-->
+
   <!-- Odometry node -->
   <node pkg="scout_odometry" name="odometry_node" type="odometry_node" required="true" output="screen">
     <rosparam command="load" file="$(find scout_config)/scout.yaml"/>

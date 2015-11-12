@@ -1,0 +1,17 @@
+<package>
+  <description brief="scout_nav">
+
+     scout_nav
+
+  </description>
+  <author>João Miranda de Almeida</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/scout_nav</url>
+  <depend package="move_base"/>
+  <depend package="scout_driver"/>
+  <depend package="scout_odometry"/>
+
+</package>
+
+

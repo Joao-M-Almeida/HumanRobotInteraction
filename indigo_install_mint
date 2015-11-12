@@ -20,6 +20,10 @@ apt-get install -y ros-indigo-joy
 
 apt-get install -y ros-indigo-key-teleop
 
+apt-get install -y ros-indigo-move-base*
+
+apt-get install -y ros-indigo-amcl
+
 mkdir -p ~/home/Documents/SistAut/
 
 #Add variables to .bashrc
@@ -35,4 +39,3 @@ source ~/.bashrc
 rosdep update
 
 rosdep install joy --os=ubuntu:trusty
-

@@ -24,8 +24,9 @@ roslaunch scout_launch scout.launch motor0:=/dev/ttyUSB1 motor1:=/dev/ttyUSB0
 
 rostopic pub /cmd_vel geometry_msgs/Twist -- '[-1.0, 0.0, 0.0]' '[0.0, 0.0, 0.0]'
 
-rostopic pub /scout_commands geometry_msgs/Pose2D -- '1' '1' '1'
+rostopic pub /move_base_simple/goal geometry_msgs/PoseStamped '{header: {stamp: now, frame_id: "map"}, pose: {position: {x: 1.0, y: 0.0, z: 0.0}, orientation: {w: 1.0}}}'
 
+// rostopic pub /move_base_simple/goal geometry_msgs/Pose --
 
   Katana:
 
