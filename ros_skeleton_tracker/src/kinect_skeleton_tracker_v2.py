@@ -11,12 +11,15 @@ import tf
 import math
 import geometry_msgs.msg
 import time
+import numpy as np
 #debug stuff
 import curses
 import atexit
 
 
 BASE_FRAME = '/openni_depth_frame'
+FRAME_COUNT = 15
+MEDIANSIZE = 5
 FRAMES = [
         '/head',
         '/neck',
@@ -98,6 +101,9 @@ flag1=0
 flag2=0
 stdscr = curses.initscr()
 
+position=[0.0,0.0]
+vel=[0.0,0.0]
+acel=0.0
 
 
 def exit_handler():
@@ -112,22 +118,22 @@ def print_coord():
         stdscr.addstr(f, 0, string)
         #print FRAMES[f] , '->', Coord[f]
 
-    angle_string='Angle alfa\t->\t' + str(alfa)
+    angle_string='Angle alfa\t->\t' + str(alfa) + '\t\t'
     stdscr.addstr(len(FRAMES), 0, angle_string)
 
-    angle_string='Angle beta\t->\t' + str(beta)
+    angle_string='Angle beta\t->\t' + str(beta) + '\t\t'
     stdscr.addstr(len(FRAMES)+1, 0, angle_string)
 
-    angle_string='Angle gama\t->\t' + str(gama)
+    angle_string='Angle gama\t->\t' + str(gama) + '\t\t'
     stdscr.addstr(len(FRAMES)+2, 0, angle_string)
 
-    angle_string='Angle valfa\t->\t' + str(valfa)
+    angle_string='Angle valfa\t->\t' + str(valfa) + '\t\t'
     stdscr.addstr(len(FRAMES)+3, 0, angle_string)
 
-    angle_string='Angle vbeta\t->\t' + str(vbeta)
+    angle_string='Angle vbeta\t->\t' + str(vbeta) + '\t\t'
     stdscr.addstr(len(FRAMES)+4, 0, angle_string)
 
-    angle_string='Angle vgama\t->\t' + str(vgama)
+    angle_string='Angle vgama\t->\t' + str(vgama) + '\t\t'
     stdscr.addstr(len(FRAMES)+5, 0, angle_string)
 
 
@@ -154,18 +160,25 @@ def angles():
     #angle between arm and forearm
     lsh_elb=[Coord[3][0]-Coord[4][0], Coord[3][1]-Coord[4][1], Coord[3][2]-Coord[4][2]]
     lhan_elb=[Coord[5][0]-Coord[4][0], Coord[5][1]-Coord[4][1], Coord[5][2]-Coord[4][2]]
-    alfa[0]=math.degrees(math.acos(dotproduct(lsh_elb, lhan_elb) / (length(lsh_elb) * length(lhan_elb))))
+    if(length(lsh_elb)!=0.0 and length(lhan_elb)!=0.0):
+        alfa[0]=math.degrees(math.acos(dotproduct(lsh_elb, lhan_elb) / (length(lsh_elb) * length(lhan_elb))))
+
     alfa[0]=int(alfa[0])
+
     ##arm##
     #angle between arm and spine
     torso_neck=[Coord[2][0]-Coord[1][0], Coord[2][1]-Coord[1][1], Coord[2][2]-Coord[1][2]]
     elb_lsh=[Coord[4][0]-Coord[3][0], Coord[4][1]-Coord[3][1], Coord[4][2]-Coord[3][2]]
-    beta[0]=math.degrees(math.acos(dotproduct(torso_neck, elb_lsh) / (length(torso_neck) * length(elb_lsh))))
+    if(length(torso_neck)!=0.0 and length(elb_lsh)!=0.0):
+        beta[0]=math.degrees(math.acos(dotproduct(torso_neck, elb_lsh) / (length(torso_neck) * length(elb_lsh))))
+
     beta[0]=int(beta[0])
     #angle between arm and chest
     sholderr_sholderl=[Coord[9][0]-Coord[3][0], Coord[9][1]-Coord[3][1], Coord[9][2]-Coord[3][2]]
     elb_shl=[Coord[4][0]-Coord[3][0], Coord[4][1]-Coord[3][1], Coord[4][2]-Coord[3][2]]
-    gama[0]=math.degrees(math.acos(dotproduct(sholderr_sholderl, elb_shl) / (length(sholderr_sholderl) * length(elb_shl))))
+    if(length(sholderr_sholderl)!=0.0 and length(elb_shl)!=0.0):
+        gama[0]=math.degrees(math.acos(dotproduct(sholderr_sholderl, elb_shl) / (length(sholderr_sholderl) * length(elb_shl))))
+
     gama[0]=int(gama[0])
     #angle between
 
@@ -179,94 +192,72 @@ def angles():
 
     #disthand=[Coord[4][0]-Coord[3][0], Coord[4][1]-Coord[3][1], Coord[4][2]-Coord[3][2]]
 
-# def waving():
-    # angle_string='\t\t'
-    # if alfa[0] > 70 and alfa[0]< 120:
-        # if beta[0] > 70 and beta[0]< 120:
-            # if abs(valfa) < 0.001:
-                # #if abs(valfa) > 1.5*abs(vbeta):
-                # angle_string='waving'
-    # stdscr.addstr(len(FRAMES)+3, 0, angle_string)
+def waving():
+    angle_string='\t\t'
+    global flag_left
+    global flag_rigth
+    if beta[0] > 70 and beta[0]< 120:
+        if valfa[0]<0:
+            flag_rigth = 1
+            if flag_left == 1:
+                angle_string='waving'
+            flag_left = 0
 
-def forearm():
-    global valfa
-    global state_forearm
-    global flag2
-    if abs(valfa[0]) < 3:
-        state_forearm='forearm stopped\t\t'
-        flag2=flag2+1
-    else:
-        if valfa[0] < 0:
-            state_forearm='forearm closing\t\t'
-            flag2=0
         if valfa[0] > 0:
-            state_forearm='forearm opening\t\t'
-            flag2=0
-
-    #string1='The forearm is ' + str(state_forearm)
-    stdscr.addstr(len(FRAMES)+9, 0, state_forearm)
-    stdscr.refresh()
-
-
-def arm():
-    global vbeta, vgama
-    global flag, flag1
-    global state_arm, state_arm2
-    if abs(vbeta[0]) < 3:
-        state_arm='arm stopped vertical\t\t'
-        flag=flag+1
+            flag_left = 1
+            if flag_rigth == 1:
+                angle_string='waving'
+            flag_rigth = 0
     else:
-        if vbeta[0] > 0:
-            state_arm='arm moving up\t\t'
-            flag=0
-        if vbeta[0] < 0:
-            state_arm='arm moving down\t\t'
-            flag=0
+        flag_left=0
+        flag_rigth=0
 
-    if abs(vgama[0]) < 3:
-        state_arm2='arm stopped horizontal\t\t'
-        flag1=flag1+1
+    stdscr.addstr(len(FRAMES)+12, 0, angle_string)
+
+def walk():
+    position[1]=position[0]
+    position[0]=(Coord[2][0]+ Coord[6][0]+ Coord[12][0]+ Coord[1][0])/4
+
+    vel[1]=vel[0]
+    vel[0]=position[0]-position[1]
+
+    acel=vel[0]-vel[1]
+
+    p=str(position)
+
+    if vel[0]>0.015:
+        stdscr.addstr(len(FRAMES)+7, 0, 'walking backward')
+    elif vel[0]<-0.015:
+        stdscr.addstr(len(FRAMES)+7, 0, 'walking forward')
     else:
-        if vgama[0] > 0:
-            state_arm2='arm opening\t\t'
-            flag1=0
-        if vgama[0] < 0:
-            state_arm2='arm closing\t\t'
-            flag1=0
+        stdscr.addstr(len(FRAMES)+7, 0, 'stopped\t\t')
 
-    stdscr.addstr(len(FRAMES)+7, 0, state_arm)
-    stdscr.addstr(len(FRAMES)+8, 0, state_arm2)
-    stdscr.refresh()
+	stdscr.addstr(len(FRAMES)+8, 0, p)
 
-def state():
-    global vgama, vbeta, valfa, stat
-    global flag, flag1, flag2
-    global file_out
-    global state_arm, state_arm2, state_forearm
-    if abs(vgama[0]) < 3 and flag1==1:
-        stat=stat+1
-        frase='state '+ str(stat) + ':\n' + str(state_arm2) + '\n' + str(state_arm) + '\n' + str(state_forearm) + '\n'
-        file_out.write(frase)
-    if abs(vbeta[0]) < 3 and flag==1:
-        stat=stat+1
-        frase='state '+ str(stat) + ':\n' + str(state_arm2) + '\n' + str(state_arm) + '\n' + str(state_forearm) + '\n'
-        file_out.write(frase)
-    if abs(valfa[0]) < 3 and flag2==1:
-        stat=stat+1
-        frase='state '+ str(stat) + ':\n' + str(state_arm2) + '\n' + str(state_arm) + '\n' + str(state_forearm) + '\n'
-        file_out.write(frase)
+def hand():
+	if vbeta[0] > 5:
+		stdscr.addstr(len(FRAMES)+9, 0, 'arm moving up\t\t')
+	elif vbeta[0] < 5:
+		stdscr.addstr(len(FRAMES)+9, 0, 'arm moving down\t\t')
+	if valfa[0] > 5:
+		stdscr.addstr(len(FRAMES)+10, 0, 'openning arm\t\t')
+	elif valfa[0] < 5:
+		stdscr.addstr(len(FRAMES)+10, 0, 'closing arm\t\t')
 
-    #string2='The arm is ' + str(state_arm) + ' and ' + str(state_arm2)
-
-
+	if Coord[5][2] > Coord[4][2]:
+		stdscr.addstr(len(FRAMES)+11, 0, 'Hand above elbow')
+	elif Coord[5][2] < Coord[4][2]:
+		stdscr.addstr(len(FRAMES)+11, 0, 'Hand under elbow')
 
 
 if __name__ == '__main__':
     stdscr = curses.initscr()
     print_coord()
     atexit.register(exit_handler)
-    file_out = open('Database.txt', 'a')
     rospy.init_node('kinect_tracking')
+
+    file_out = open('Database.txt', 'a')
+    time_coord=[[[0,0,0] for t in range(MEDIANSIZE)] for i in range(FRAME_COUNT)]
 
     listener = tf.TransformListener()
 
@@ -295,24 +286,34 @@ if __name__ == '__main__':
         #   print('No master found')
         #   continue
 
-        master=1
-        #print(master)
+        master=2
 
         try:
             for f in range(0,len(FRAMES)):
                 st='_' + str(master)
                 coordinates = listener.lookupTransform(BASE_FRAME, FRAMES[f] + st, rospy.Time(0))
-                Coord[f] = coordinates[0]
+                #delete oldest & append to 3d array
+                time_coord[f].pop(0)
+                time_coord[f].append(list(coordinates[0]))
+                current = time_coord[f]
+                #print(current)
+                #apply median filter
+                median_res = [np.median([current[i][j] for i in range(MEDIANSIZE)]) for j in range(3)]
+                #time.sleep(30)
+                #coordinates[0] = filtered results
+                Coord[f] = median_res
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
             continue
 
         angles()
 
         print_coord()
-        #waving()
-        forearm()
-        arm()
-        state()
+        waving()
+        walk()
+        hand()
+        #forearm()
+        #arm()
+        #state()
 
 
         rate.sleep()
