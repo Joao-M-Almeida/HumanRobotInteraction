@@ -7,9 +7,9 @@ import rospy
 from sensor_msgs.msg import JointState as js
 
 def callback(data):
-    rospy.loginfo('Joints: ' + str(data.name))
-    rospy.loginfo('positions: ' + str(data.position))
-    rospy.loginfo('velocities: ' + str(data.velocity))
+    #rospy.loginfo('Joints: ' + str(data.name))
+    #rospy.loginfo('positions: \n' + str(data.position))
+    rospy.loginfo('velocities: \n' + str(data.velocity))
 
 
 
