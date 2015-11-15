@@ -12,6 +12,7 @@ import math
 import geometry_msgs.msg
 import std_msgs.msg
 from ros_skeleton_tracker.msg import pose_msg
+from ros_skeleton_tracker.msg import gesture
 import time
 import numpy as np
 #debug stuff
@@ -114,8 +115,8 @@ string_walk=' '
 string_hand=' '
 
 class gesture_publisher:
-    pub = rospy.Publisher('/gestures', pose_msg, queue_size=10)
-    gestures = pose_msg()
+    pub = rospy.Publisher('/gestures', gesture, queue_size=10)
+    gestures = gesture()
 
     def __init__(self):
         #pub = rospy.Publisher('/gestures', pose_msg, queue_size=10)
@@ -129,6 +130,23 @@ class gesture_publisher:
         self.gestures.gesture=message
         self.pub.publish(self.gestures)
 
+class masterlocation_publisher:
+    pub = rospy.Publisher('/masterlocation', pose_msg, queue_size=10)
+    masterlocation = pose_msg()
+
+    def __init__(self):
+        self.masterlocation.header.stamp = rospy.Time.now()
+        self.masterlocation.id=0
+        self.masterlocation.x=0
+        self.masterlocation.y=0
+        self.pub.publish(self.masterlocation)
+
+    def publish(self, masterid, x, y=0):
+        self.masterlocation.header.stamp = rospy.Time.now()
+        self.masterlocation.id=masterid
+        self.masterlocation.x=x
+        self.masterlocation.y=y
+        self.pub.publish(self.masterlocation)
 
 def exit_handler():
     curses.endwin()
@@ -239,32 +257,41 @@ def waving(publ):
                 #temp='no wave'
             flag_rigth = 0
         else:
-            temp='no wave'
+            temp=''
+            #temp='no wave'
     else:
         flag_left=0
         flag_rigth=0
         temp='no wave'
 
-    if wave_string!=temp:
+    if wave_string!=temp and temp!='':
         wave_string=temp
-        stdscr.addstr(len(FRAMES)+12, 0, wave_string + '\t\t')
+        #stdscr.addstr(len(FRAMES)+12, 0, wave_string + '\t\t')
         publ.publish(wave_string)
 
 def walk(publ):
+    #avaliar possibilidade de usar 2 coordenadas para a position
     temp=''
     global walk_string
-    position[1:4]=position[0:3]
-    position[0]=(Coord[2][0]+ Coord[6][0]+ Coord[12][0]+ Coord[1][0])/4
+    global position
+    #position[1:4]=position[0:3]
+    '''
+    1  - /neck
+    2  - /torso
+    6  - /left_hip
+    12 - /right_hip
+    '''
+    #position[0]=(Coord[2][0]+ Coord[6][0]+ Coord[12][0]+ Coord[1][0])/4
 
     #vel[1]=vel[0]
     vel[0]=position[0]-position[3]
 
     #acel=vel[0]-vel[1]
 
-    if vel[0]>0.1:
+    if abs(vel[0])>0.1:
         temp = 'walking backward'
-    elif vel[0]<-0.1:
-        temp = 'walking forward'
+        if vel[0]<0:
+            temp = 'walking forward'
     else:
         temp = 'no walking'
 
@@ -278,29 +305,29 @@ def hand(publ):
     global string_arm1
     global string_hand
     temp=''
-    if vbeta[0] > 10:
+    if abs(vbeta[0]) > 10:
         temp='arm moving up'
-    elif vbeta[0] < -10:
-        temp='arm moving down'
+        if vbeta[0] < 0:
+            temp='arm moving down'
     else:
         temp='arm stopped'
 
     if string_arm!=temp:
         string_arm=temp
-        stdscr.addstr(len(FRAMES)+9, 0, string_arm + '\t\t')
+        #stdscr.addstr(len(FRAMES)+9, 0, string_arm + '\t\t')
         publ.publish(string_arm)
 
     temp=''
-    if valfa[0] > 10:
+    if abs(valfa[0]) > 10:
         temp='opening forearm'
-    elif valfa[0] < -10:
-        temp='closing forearm'
+        if valfa[0] < 0:
+            temp='closing forearm'
     else:
         temp='forearm stopped'
 
     if string_arm1!=temp:
         string_arm1=temp
-        stdscr.addstr(len(FRAMES)+10, 0, string_arm1 + '\t\t')
+        #stdscr.addstr(len(FRAMES)+10, 0, string_arm1 + '\t\t')
         publ.publish(string_arm1)
 
 
@@ -312,34 +339,9 @@ def hand(publ):
 
     if string_hand!=temp:
         string_hand=temp
-        stdscr.addstr(len(FRAMES)+11, 0, string_hand)
+        #stdscr.addstr(len(FRAMES)+11, 0, string_hand)
         publ.publish(string_hand)
 
-
-'''def hand():
-    handbyte=0
-    if vbeta[0] > 5:
-        stdscr.addstr(len(FRAMES)+9, 0, 'arm moving up\t\t')
-        handbyte=handbyte+1
-    elif vbeta[0] < 5:
-        stdscr.addstr(len(FRAMES)+9, 0, 'arm moving down\t\t')
-        handbyte=handbyte+2
-    if valfa[0] > 5:
-        stdscr.addstr(len(FRAMES)+10, 0, 'openning arm\t\t')
-        handbyte=handbyte+4
-    elif valfa[0] < 5:
-        stdscr.addstr(len(FRAMES)+10, 0, 'closing arm\t\t')
-        handbyte=handbyte+8
-
-    if Coord[5][2] > Coord[4][2]:
-        stdscr.addstr(len(FRAMES)+11, 0, 'Hand above elbow')
-        handbyte=handbyte+16
-    elif Coord[5][2] < Coord[4][2]:
-        stdscr.addstr(len(FRAMES)+11, 0, 'Hand under elbow')
-        handbyte=handbyte+32
-
-    return handbyte
-'''
 
 if __name__ == '__main__':
     stdscr = curses.initscr()
@@ -348,9 +350,7 @@ if __name__ == '__main__':
     rospy.init_node('kinect_tracking')
 
     gest_publ=gesture_publisher()
-    #pub = rospy.Publisher('/gestures', pose_msg, queue_size=10)
-    #gestures = pose_msg()
-
+    centermass_publ=masterlocation_publisher()
 
     file_out = open('Database.txt', 'a')
 
@@ -373,15 +373,24 @@ if __name__ == '__main__':
                 #print(current)
                 #apply median filter
                 median_res = [np.median([current[i][j] for i in range(MEDIANSIZE)]) for j in range(3)]
-                #time.sleep(30)
-                #coordinates[0] = filtered results
+                #store filtered results
                 Coord[f] = median_res
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
             continue
 
         angles()
-
         print_coord()
+        #master's center of mass location
+        position[1:4]=position[0:3]
+        '''
+        1  - /neck
+        2  - /torso
+        6  - /left_hip
+        12 - /right_hip
+        '''
+        position[0]=(Coord[2][0]+ Coord[6][0]+ Coord[12][0]+ Coord[1][0])/4
+        centermass_publ.publish(master, position[0])
+
         waving(gest_publ)
 
         walk(gest_publ)
