@@ -28,6 +28,9 @@ rostopic pub /move_base_simple/goal geometry_msgs/PoseStamped '{header: {stamp: 
 
 // rostopic pub /move_base_simple/goal geometry_msgs/Pose --
 
+rostopic pub /katana_commands std_msgs/String -- 'clap'
+
+
   Katana:
 
 rostopic pub /katana_arm_controller/joint_movement_action/goal katana_msgs/JointMovementActionGoal '{header: {stamp: now}, goal_id: {stamp: now, id: "WavingStart1" }, goal: {jointGoal: {header: {stamp: now}, name: ['katana_motor1_pan_joint', 'katana_motor2_lift_joint', 'katana_motor3_lift_joint', 'katana_motor4_lift_joint', 'katana_motor5_wrist_roll_joint', 'katana_r_finger_joint', 'katana_l_finger_joint'], position: [-1.85,1.57,0.785,-0.175,-1.57,0.175,0.175]}}}'
