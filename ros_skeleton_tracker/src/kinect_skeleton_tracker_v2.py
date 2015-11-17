@@ -256,8 +256,8 @@ def waving(publ):
             #else:
                 #temp='no wave'
             flag_rigth = 0
-        else:
-            temp=''
+        #else:
+            #temp=''
             #temp='no wave'
     else:
         flag_left=0
