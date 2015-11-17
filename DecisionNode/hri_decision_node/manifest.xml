@@ -1,0 +1,17 @@
+<package>
+  <description brief="hri_decision_node">
+
+     hri_decision_node
+
+  </description>
+  <author>João Miranda de Almeida</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/hri_decision_node</url>
+  <depend package="katana_control"/>
+  <depend package="ros_skeleton_tracker"/>
+  <depend package="scout_control"/>
+
+</package>
+
+

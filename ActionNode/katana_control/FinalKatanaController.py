@@ -31,6 +31,8 @@ pub = rospy.Publisher('/katana_arm_controller/joint_movement_action/goal', jmag,
 
 default_position = [-0.28,2,-2,-1.7,0,0,0]
 
+calibration_position = [-2.9,2.1,-2.15,-1.91,-2.87,0.29,0.29]
+
 def waving():
     position_sequence = [[-1.85,1.57,0.175,-0.35,-1.57,0.175,0.175], [-1.85,1.57,-0.175,0.35,-1.57,0.175,0.175], [-1.85,1.57,0.175,-0.35,-1.57,0.175,0.175], [-1.85,1.57,-0.175,0.35,-1.57,0.175,0.175], default_position]
     delay_sequence = [5,1.3,1.3,1.3,5]
@@ -71,8 +73,16 @@ def command_process(data):
     rospy.loginfo('command received: ' + str(data))
     if data.data == 'wave':
         waving()
-
-
+    elif data.data == 'low_five':
+        low_five()
+    elif data.data == 'high_five':
+        high_five()
+    elif data.data == 'clap':
+        clapping()
+    elif data.data == 'default':
+        execute_movement([default_position], [10])
+    elif data.data == 'calibration':
+        execute_movement([calibration_position], [10])
 
 
 if __name__ == '__main__':
@@ -88,7 +98,6 @@ if __name__ == '__main__':
         #waving()
         #clapping()
         #execute_movement([default_position], [10])
-
         rospy.spin()
     except rospy.ROSInterruptException:
         pass
