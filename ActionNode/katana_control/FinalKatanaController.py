@@ -33,6 +33,15 @@ default_position = [-0.28,2,-2,-1.7,0,0,0]
 
 calibration_position = [-2.9,2.1,-2.15,-1.91,-2.87,0.29,0.29]
 
+upright = [-0.28,1.57,0,0,0,-0.44,-0.44]
+
+slide_ready = [-0.28,1.57,-0.35,1.4,0,-0.44,-0.44]
+slide_pass = [-0.28,1.57,-0.35,1.585,0,-0.44,-0.44]
+def slide():
+    position_sequence = [slide_ready,slide_pass,slide_ready]
+    delay_sequence = [4,0.7,2]
+    execute_movement(position_sequence, delay_sequence)
+
 def waving():
     position_sequence = [[-1.85,1.57,0.175,-0.35,-1.57,0.175,0.175], [-1.85,1.57,-0.175,0.35,-1.57,0.175,0.175], [-1.85,1.57,0.175,-0.35,-1.57,0.175,0.175], [-1.85,1.57,-0.175,0.35,-1.57,0.175,0.175], default_position]
     delay_sequence = [5,1.3,1.3,1.3,5]
@@ -63,8 +72,8 @@ def execute_movement(position_sequence, delay_sequence):
         jmag_msg.goal.jointGoal.name=joint_names
         jmag_msg.goal_id.id = 'Katana Command - ' + str(jmag_msg.header.stamp.secs) + ' . ' + str(jmag_msg.header.stamp.nsecs)
         jmag_msg.goal.jointGoal.position=position
-        rospy.loginfo(jmag_msg)
-        rospy.loginfo("Rate : " + str(1/delay_sequence[index]))
+        #rospy.loginfo(jmag_msg)
+        #rospy.loginfo("Rate : " + str(1/delay_sequence[index]))
         pub.publish(jmag_msg)
         rate = rospy.Rate(1.0/delay_sequence[index])
         rate.sleep()
@@ -91,7 +100,13 @@ if __name__ == '__main__':
         rospy.Subscriber('/katana_commands/', String, command_process)
         rate = rospy.Rate(0.5)
         rate.sleep()
-        execute_movement([default_position], [10])
+        execute_movement([calibration_position], [10])
+        rospy.loginfo('Going to upright')
+        execute_movement([upright], [10])
+        rospy.loginfo('Going to pass slide')
+        slide()
+        rospy.loginfo('Done')
+
         #execute_movement([[-0.28,1.57,0,0,0,-0.2,-0.2]],[10])
         #low_five()
         #high_five()
