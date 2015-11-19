@@ -32,7 +32,7 @@ rostopic pub /katana_commands std_msgs/String -- 'clap'
 
 rostopic pub /gestures ros_skeleton_tracker/gesture -- '{header: {stamp: now}, gesture: "waving"}'
 
-rostopic pub /masterlocation ros_skeleton_tracker/pose_msg -- '{header: {stamp: now},id: 0, x: 1, y: 1}'    
+rostopic pub /masterlocation ros_skeleton_tracker/pose_msg -- '{header: {stamp: now},id: 0, x: 1, y: 1}'
 
   Katana:
 
@@ -66,3 +66,10 @@ rospack find [pacote]
 #Criar Link simbolico entre porta série e USB
  sudo rm /dev/ttyS0
 sudo ln -s /dev/ttyUSB0 /dev/ttyS0
+
+
+# Two Computers:
+
+
+export ROS_MASTER_URI=http://10.42.0.1:11311
+export ROS_IP=10.42.0.178

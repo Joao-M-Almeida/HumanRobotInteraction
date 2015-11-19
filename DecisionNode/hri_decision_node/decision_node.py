@@ -22,7 +22,7 @@ default_prob = 1.0/n_cmds
 
 master_position = [(0,0),(0,0),(0,0),(0,0),(0,0)]
 
-commands = {'wave': default_prob, 'low_five': default_prob, 'high_five': default_prob, 'clap': 0.9}
+commands = {'wave': default_prob, 'low_five': default_prob, 'high_five': default_prob, 'clap': default_prob}
 
 kat_pub = rospy.Publisher('/katana_commands', String, queue_size=10)
 scout_pub = rospy.Publisher('/scout_commands', Pose2D, queue_size=10)
@@ -30,6 +30,11 @@ scout_pub = rospy.Publisher('/scout_commands', Pose2D, queue_size=10)
 kinect_info = []
 
 def new_gesture(gesture):
+    msg = String()
+    msg.data = 'wave'
+    if gesture.gesture == 'waving':
+        kat_pub.publish(msg)
+        rospy.loginfo("Sending to Katana"+str(msg))
     kinect_info.append((gesture.gesture,gesture.header.stamp.secs))
 
 
@@ -44,12 +49,12 @@ def normallize_cmd_prob():
     for cmd in commands:
         commands[cmd]=prob/prob_sum
 
-def scout_controller():
+def action_controller():
     global alive
     rate = rospy.Rate(0.5)
     while(True):
-        rospy.loginfo("Kinect gestures: " + str(kinect_info))
-        rospy.loginfo("Master: " + str(master_position))
+        #rospy.loginfo("Kinect gestures: " + str(kinect_info))
+        #rospy.loginfo("Master: " + str(master_position))
         for cmd, prob in commands.iteritems():
             if prob > threshold:
                 rospy.loginfo("Executing: " + str(cmd))
@@ -74,7 +79,7 @@ if __name__ == '__main__':
 
         rospy.loginfo("Commands :" + str(commands))
 
-        check_command = threading.Thread(target=scout_controller)
+        check_command = threading.Thread(target=action_controller)
         check_command.setDaemon(True)
         check_command.start()
         rospy.spin()

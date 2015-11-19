@@ -81,7 +81,7 @@ def execute_movement(position_sequence, delay_sequence):
 def command_process(data):
     rospy.loginfo('command received: ' + str(data))
     if data.data == 'wave':
-        waving()
+        slide()
     elif data.data == 'low_five':
         low_five()
     elif data.data == 'high_five':
@@ -101,9 +101,9 @@ if __name__ == '__main__':
         rate = rospy.Rate(0.5)
         rate.sleep()
         execute_movement([calibration_position], [10])
-        rospy.loginfo('Going to upright')
+        rospy.loginfo('Test Going to upright')
         execute_movement([upright], [10])
-        rospy.loginfo('Going to pass slide')
+        rospy.loginfo('Test Going to pass slide')
         slide()
         rospy.loginfo('Done')
 
