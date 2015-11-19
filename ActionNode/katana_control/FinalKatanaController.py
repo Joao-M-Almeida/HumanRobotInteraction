@@ -39,7 +39,7 @@ slide_ready = [-0.28,1.57,-0.35,1.4,0,-0.44,-0.44]
 slide_pass = [-0.28,1.57,-0.35,1.585,0,-0.44,-0.44]
 def slide():
     position_sequence = [slide_ready,slide_pass,slide_ready]
-    delay_sequence = [4,0.7,2]
+    delay_sequence = [1,0.5,2]
     execute_movement(position_sequence, delay_sequence)
 
 def waving():
