@@ -2,8 +2,10 @@
 
 import socket
 
-193.136.131.55
+
 TCP_IP = '127.0.0.1'
+TCP_IP = '194.210.228.232'
+TCP_IP = '0.0.0.0'
 TCP_PORT = 5005
 BUFFER_SIZE = 20  # Normally 1024, but we want fast response
 

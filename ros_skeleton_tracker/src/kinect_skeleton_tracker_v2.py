@@ -266,8 +266,9 @@ def waving(publ):
 
     if wave_string!=temp and temp!='':
         wave_string=temp
-        #stdscr.addstr(len(FRAMES)+12, 0, wave_string + '\t\t')
-        publ.publish(wave_string)
+        #stdscr.addstr(len(FRAMES)+:12, 0, wave_string + '\t\t')
+        if wave_string!='no wave':
+            publ.publish(wave_string)
 
 def walk(publ):
     #avaliar possibilidade de usar 2 coordenadas para a position
