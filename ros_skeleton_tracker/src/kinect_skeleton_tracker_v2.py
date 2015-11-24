@@ -102,6 +102,10 @@ file_out=file
 flag=0
 flag1=0
 flag2=0
+flag_left=0
+flag_rigth=0
+flag_f=0
+flag_b=0
 stdscr = curses.initscr()
 
 position=[0.0,0.0,0.0,0.0]
@@ -109,6 +113,7 @@ vel=[0.0,0.0]
 acel=0.0
 wave_string=' '
 walk_string=' '
+call_string=' '
 string_arm=' '
 string_arm1=' '
 string_walk=' '
@@ -118,12 +123,12 @@ class gesture_publisher:
     pub = rospy.Publisher('/gestures', gesture, queue_size=10)
     gestures = gesture()
 
-    def __init__(self):
+    #def __init__(self):
         #pub = rospy.Publisher('/gestures', pose_msg, queue_size=10)
         #gestures = pose_msg()
-        self.gestures.header.stamp = rospy.Time.now()
-        self.gestures.gesture='ahoy!'
-        self.pub.publish(self.gestures)
+        #self.gestures.header.stamp = rospy.Time.now()
+        #self.gestures.gesture='ahoy!'
+        #self.pub.publish(self.gestures)
 
     def publish(self, message):
         self.gestures.header.stamp = rospy.Time.now()
@@ -178,8 +183,6 @@ def print_coord():
     angle_string='Angle vgama\t->\t' + str(vgama) + '\t\t'
     stdscr.addstr(len(FRAMES)+5, 0, angle_string)
 
-
-
     stdscr.refresh()
 
 def dotproduct(v1, v2):
@@ -224,7 +227,6 @@ def angles():
         gama[0]=math.degrees(math.acos(dotproduct(sholderr_sholderl, elb_shl) / (length(sholderr_sholderl) * length(elb_shl))))
 
     gama[0]=int(gama[0])
-    #angle between
 
     valfa[0]=alfa[0]-alfa[1]
     vbeta[0]=beta[0]-beta[1]
@@ -241,7 +243,7 @@ def waving(publ):
     global wave_string
     global flag_left
     global flag_rigth
-    if beta[0] > 70 and beta[0]< 120:
+    if beta[0] > 60 and beta[0]< 120 and gama[0] > 150:
         if valfa[0] < -5:
             flag_rigth = 1
             if flag_left == 1:
@@ -269,6 +271,40 @@ def waving(publ):
         #stdscr.addstr(len(FRAMES)+:12, 0, wave_string + '\t\t')
         if wave_string!='no wave':
             publ.publish(wave_string)
+
+def calling(publ):
+    temp = ''
+    global call_string
+    global flag_f
+    global flag_b
+    if beta[0] > 60 and beta[0]< 120 and gama[0] > 60 and gama[0] < 140:
+        if valfa[0] < -5:
+            flag_b = 1
+            if flag_f == 1:
+                temp='calling'
+            #else:
+                #temp='no wave'
+            flag_f = 0
+        elif valfa[0] > 5:
+            flag_f = 1
+            if flag_b == 1:
+                temp='calling'
+            #else:
+                #temp='no wave'
+            flag_b = 0
+        #else:
+            #temp=''
+            #temp='no wave'
+    else:
+        flag_f=0
+        flag_b=0
+        temp='no calling'
+
+    if call_string!=temp and temp!='':
+        call_string=temp
+        #stdscr.addstr(len(FRAMES)+:12, 0, wave_string + '\t\t')
+        if call_string!='no calling':
+            publ.publish(call_string)
 
 def walk(publ):
     #avaliar possibilidade de usar 2 coordenadas para a position
@@ -393,6 +429,8 @@ if __name__ == '__main__':
         centermass_publ.publish(master, position[0])
 
         waving(gest_publ)
+
+        calling(gest_publ)
 
         walk(gest_publ)
 

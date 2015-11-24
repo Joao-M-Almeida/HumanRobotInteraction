@@ -67,6 +67,11 @@ def sign(val):
     else:
         return 1
 
+def dist(x1,y1,x2,y2):
+    d_x = math.pow(x2-x1,2)
+    d_y = math.pow(y2-y1,2)
+    return math.sqrt(d_x + d_y)
+
 def scout_publisher(motion_pub):
     global my_lock
     global publish_rate
@@ -198,40 +203,50 @@ def scout_controller():
 
 
 
-    if  not (first_rot and counter == 0):
-        # Hasn't done the First rotation
-        if command_x==0:
-            #x=0 -> sign(y)*90º
-            first_rotation=sign(command_y)*(math.pi/2)   #90º -> pi/2 rad
+    while True:
+        if  not first_rot:
+            # Hasn't done the First rotation
+            if command_x==0:
+                #x=0 -> sign(y)*90º
+                first_rotation=sign(command_y)*(math.pi/2)   #90º -> pi/2 rad
+            else:
+                #x>0 -> arctg(y/x)
+                #x<0 -> sign(y)*(180-arctg(y/x))
+                first_rotation=math.atan2(command_y,command_x)
+
+            # Set velocities and counter accordingly to the desired destination
+            scout_left_vel=sign(first_rotation)*200
+            scout_right_vel=scout_left_vel
+
+            destination_orientation=t_at_command+first_rotation
+            #guarantee angles between -pi and +pi
+            if destination_orientation>math.pi:
+                destination_orientation=destination_orientation-2*math.pi
+            if destination_orientation<-math.pi:
+                destination_orientation=destination_orientation+2*math.pi
+
+            if abs(destination_orientation-rpy[2])<angle_threshold:
+                first_rot = True
+        elif not deslocation:
+            # Hasn't done the deslocation
+            linear_vel=default_scout_vel
+            #ang_vel=???
+            ang_vel=0
+            scout_left_vel=linear_vel+ang_vel
+            scout_right_vel=-(linear_vel-ang_vel)
+            # Set velocities and counter accordingly to the desired distance
+
+            if abs(dist(rpy[0],rpy[1],x_at_command+command_x, y_at_command+command_y))<dist_threshold:
+                deslocation = True
+        elif not last_rot:
+            # Hasn't done the last rotation
+            #TODO
+            # Set velocities and counter accordingly to the desired final orientation
+
+            last_rot = True
         else:
-            #x>0 -> arctg(y/x)
-            #x<0 -> sign(y)*(180-arctg(y/x))
-            first_rotation=math.atan2(command_y,command_x)
-
-        # Set velocities and counter accordingly to the desired destination
-        scout_left_vel=sign(first_rotation)*200
-        scout_right_vel=scout_left_vel
-
-        destination_orientation=t_at_command+first_rotation
-        #guarantee angles between -pi and +pi
-        if destination_orientation>math.pi:
-            destination_orientation=destination_orientation-2*math.pi
-        if destination_orientation<-math.pi:
-            destination_orientation=destination_orientation+2*math.pi
-        if abs(destination_orientation-rpy[2])<angle_threshold:
-            first_rot = True
-    elif not (deslocation and counter == 0):
-        # Hasn't done the deslocation
-        #TODO
-        # Set velocities and counter accordingly to the desired distance
-
-        deslocation = True
-    elif not (last_rot and counter == 0):
-        # Hasn't done the last rotation
-        #TODO
-        # Set velocities and counter accordingly to the desired final orientation
-
-        last_rot = True
+            scout_left_vel=0
+            scout_right_vel=0
 
 
 if __name__ == '__main__':
