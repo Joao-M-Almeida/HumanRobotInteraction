@@ -369,7 +369,7 @@ def hand(publ):
     if cos_t > 0 :
         temp='elbow in front of body'
     else:
-        temp='elbow behin body'
+        temp='elbow behind body'
 
     if string_elbow!=temp:
         string_elbow=temp
@@ -378,7 +378,21 @@ def hand(publ):
 
 
 def handing(publ):
-    #TODO
+
+    global string_elbow
+    global handing_string
+
+    temp = ''
+    if gama[0] > 75 and gama[0] < 105 and string_elbow == 'elbow in front of body' and alfa[0]>120:
+        temp = 'handing'
+    else:
+        temp = 'no handing'
+
+    if handing_string!=temp:
+        handing_string=temp
+        if handing_string!='no handing':
+            publ.publish(handing_string)
+
 
 
 if __name__ == '__main__':
