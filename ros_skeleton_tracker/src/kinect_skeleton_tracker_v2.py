@@ -449,6 +449,8 @@ if __name__ == '__main__':
 
         hand(gest_publ)
 
+        handing(gest_publ)
+
         #forearm()
         #arm()
         #state()
