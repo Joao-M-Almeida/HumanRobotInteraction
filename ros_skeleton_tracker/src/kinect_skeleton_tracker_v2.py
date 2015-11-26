@@ -380,6 +380,7 @@ def hand(publ):
         publ.publish(string_hand)
 
 def handing(publ):
+    #TODO
 
 
 if __name__ == '__main__':

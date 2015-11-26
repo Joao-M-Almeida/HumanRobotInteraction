@@ -30,6 +30,7 @@ import time
 import math
 import tf
 import threading
+import atexit
 
 default_scout_vel = 1500
 d = 26.5
@@ -249,7 +250,12 @@ def scout_controller():
             scout_right_vel=0
 
 
+def exit_handler():
+    print 'Exiting!'
+
 if __name__ == '__main__':
+    atexit.register(exit_handler)
+
     try:
 
         rospy.init_node('scout_control', anonymous=True)
@@ -259,7 +265,9 @@ if __name__ == '__main__':
         scout_pub = threading.Thread(target=scout_publisher,args=(motion_pub,))
         scout_ctrl = threading.Thread(target=scout_controller)
         time.sleep(2)
+        scout_pub.setDaemon(True)
         scout_pub.start()
+        scout_ctrl.setDaemon(True)
         scout_ctrl.start()
         rospy.spin()
     except rospy.ROSInterruptException:
