@@ -58,24 +58,6 @@ Coord = [
         [0.0,0.0,0.0]
         ]
 
-Coordint = [
-        [0,0,0],
-        [0,0,0],
-        [0,0,0],
-        [0,0,0],
-        [0,0,0],
-        [0,0,0],
-        [0,0,0],
-        [0,0,0],
-        [0,0,0],
-        [0,0,0],
-        [0,0,0],
-        [0,0,0],
-        [0,0,0],
-        [0,0,0],
-        [0,0,0]
-        ]
-
 #arm angles
 alfa = [0.0,0.0]
 beta = [0.0,0.0]
@@ -98,7 +80,6 @@ state_arm=' '
 state_arm2=' '
 stat=1
 #state=0
-file_out=file
 flag=0
 flag1=0
 flag2=0
@@ -114,10 +95,11 @@ acel=0.0
 wave_string=' '
 walk_string=' '
 call_string=' '
-string_arm=' '
-string_arm1=' '
-string_walk=' '
-string_hand=' '
+string_arm=''
+string_arm1=''
+string_walk=''
+string_hand=''
+string_elbow = ''
 
 class gesture_publisher:
     pub = rospy.Publisher('/gestures', gesture, queue_size=10)
@@ -155,7 +137,6 @@ class masterlocation_publisher:
 
 def exit_handler():
     curses.endwin()
-    file_out.close()
     print 'Exiting!'
 
 def print_coord():
@@ -341,6 +322,7 @@ def hand(publ):
     global string_arm
     global string_arm1
     global string_hand
+    global string_elbow
     temp=''
     if abs(vbeta[0]) > 10:
         temp='arm moving up'
@@ -379,6 +361,22 @@ def hand(publ):
         #stdscr.addstr(len(FRAMES)+11, 0, string_hand)
         publ.publish(string_hand)
 
+    temp=''
+    lr = [Coord[9][0]-Coord[3][0],Coord[9][1]-Coord[3][1]]
+    lr_prepend = [-lr[1],lr[0]]
+    re = [Coord[9][0]-Coord[10][0],Coord[9][1]-Coord[10][1]]
+    cos_t = dotproduct(lr_prepend,re) / (length(lr_prepend)*length(re))
+    if cos_t > 0 :
+        temp='elbow in front of body'
+    else:
+        temp='elbow behin body'
+
+    if string_elbow!=temp:
+        string_elbow=temp
+        #stdscr.addstr(len(FRAMES)+11, 0, string_elbow)
+        publ.publish(string_elbow)
+
+
 def handing(publ):
     #TODO
 
@@ -391,8 +389,6 @@ if __name__ == '__main__':
 
     gest_publ=gesture_publisher()
     centermass_publ=masterlocation_publisher()
-
-    file_out = open('Database.txt', 'a')
 
     time_coord=[[[0,0,0] for t in range(MEDIANSIZE)] for i in range(FRAME_COUNT)]
 
