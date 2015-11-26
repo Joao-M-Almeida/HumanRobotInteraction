@@ -207,8 +207,8 @@ def scout_controller():
         if  not first_rot:
             # Hasn't done the First rotation
             if command_x==0:
-                #x=0 -> sign(y)*90º
-                first_rotation=sign(command_y)*(math.pi/2)   #90º -> pi/2 rad
+                #x=0 -> sign(y)*90
+                first_rotation=sign(command_y)*(math.pi/2)   #90 -> pi/2 rad
             else:
                 #x>0 -> arctg(y/x)
                 #x<0 -> sign(y)*(180-arctg(y/x))

@@ -379,6 +379,8 @@ def hand(publ):
         #stdscr.addstr(len(FRAMES)+11, 0, string_hand)
         publ.publish(string_hand)
 
+def handing(publ):
+
 
 if __name__ == '__main__':
     stdscr = curses.initscr()
