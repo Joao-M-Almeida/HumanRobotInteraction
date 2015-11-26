@@ -32,7 +32,7 @@ import tf
 import threading
 import atexit
 
-default_scout_vel = 1500
+default_scout_vel = 300
 d = 26.5
 r = 10
 publish_rate = 0.25
@@ -157,6 +157,10 @@ def command_process(data):
     global scout_left_vel
     global scout_right_vel
     global my_lock
+    global first_rot
+    global deslocation
+    global last_rot
+
 
     my_lock.acquire()
 
@@ -209,7 +213,10 @@ def scout_controller():
             # Hasn't done the First rotation
             if command_x==0:
                 #x=0 -> sign(y)*90
-                first_rotation=sign(command_y)*(math.pi/2)   #90 -> pi/2 rad
+                if command_y != 0:
+                    first_rotation=sign(command_y)*(math.pi/2)   #90 -> pi/2 rad
+                else:
+                    first_rotation = 0;
             else:
                 #x>0 -> arctg(y/x)
                 #x<0 -> sign(y)*(180-arctg(y/x))
@@ -233,11 +240,13 @@ def scout_controller():
             linear_vel=default_scout_vel
             #ang_vel=???
             ang_vel=0
-            scout_left_vel=linear_vel+ang_vel
-            scout_right_vel=-(linear_vel-ang_vel)
+            scout_right_vel=linear_vel+ang_vel
+            scout_left_vel=-(linear_vel-ang_vel)
             # Set velocities and counter accordingly to the desired distance
 
-            if abs(dist(rpy[0],rpy[1],x_at_command+command_x, y_at_command+command_y))<dist_threshold:
+            ahoy = dist(scout_x,scout_y,x_at_command+command_x, y_at_command+command_y)
+            print(ahoy)
+            if abs(ahoy)<dist_threshold:
                 deslocation = True
         elif not last_rot:
             # Hasn't done the last rotation
