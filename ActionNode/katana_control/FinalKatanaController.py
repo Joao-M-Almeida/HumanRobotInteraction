@@ -62,6 +62,11 @@ def low_five():
     delay_sequence = [2.5,6.5,6]
     execute_movement(position_sequence, delay_sequence)
 
+def grabbing():
+    position_sequence = [[-0.28,1.57,-1,0,1.62,0,0],[-0.28,1.57,-1,0,1.62,-0.3,-0.3], default_position]
+    delay_sequence = [5,3,8]
+    execute_movement(position_sequence, delay_sequence)
+
 def execute_movement(position_sequence, delay_sequence):
     if len(position_sequence) != len(delay_sequence):
         rospy.logerr("KATANA MOVEMENT ERROR")
@@ -88,6 +93,8 @@ def command_process(data):
         high_five()
     elif data.data == 'clap':
         clapping()
+    elif data.data == 'grabbing':
+        grabbing()
     elif data.data == 'default':
         execute_movement([default_position], [10])
     elif data.data == 'calibration':
