@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import pandas as pd
 from sklearn.svm import SVC
 from sklearn import preprocessing
@@ -5,7 +7,7 @@ import numpy as np
 import time
 from sklearn.metrics import accuracy_score
 
-database = pd.read_csv("/home/jmirandadealme/Documents/SistAut/HumanRobotInteraction/others/TrainingData/total.txt", skipinitialspace=True ,quotechar ="'")
+database = pd.read_csv("/home/jmirandadealme/Documents/SistAut/HumanRobotInteraction/others/TrainingData/todos.txt", skipinitialspace=True ,quotechar ="'")
 
 database["t5"] = 0
 database["t4"] = 0
@@ -16,7 +18,7 @@ database["t1"] = 0
 
 
 le = preprocessing.LabelEncoder()
-le.fit([0.0,'closingforearm','armmovingdown','armmovingup','armstopped','forearmstopped','handaboveelbow', 'handunderelbow', 'nowalking','openingforearm','walkingbackward','walkingforward','waving','calling', 'handing',])
+le.fit([0.0,'closingforearm','armmovingdown','armmovingup','armstopped','forearmstopped', 'handaboveelbow', 'handunderelbow', 'nowalking','openingforearm','walkingbackward','walkingforward','waving', 'calling', 'handing', 'elbowbehindbody', 'elbowinfrontofbody'])
 database["g1"]=le.transform(database["g1"])
 database["g2"]=le.transform(database["g2"])
 database["g3"]=le.transform(database["g3"])
