@@ -36,8 +36,8 @@ default_scout_vel = 300
 d = 26.5
 r = 10
 publish_rate = 0.25
-dist_threshold = 0.1
-angle_threshold = 0.2
+dist_threshold = 0.05
+angle_threshold = 0.1
 
 rpy = [0,0,0]
 scout_x = 0
@@ -49,7 +49,9 @@ scout_right_vel = 0
 command_x = 0
 command_y = 0
 command_t = 0
-
+command_wx = 0
+command_wy = 0
+    
 x_at_command = 0
 y_at_command = 0
 t_at_command = 0
@@ -151,6 +153,8 @@ def command_process(data):
     global command_x
     global command_y
     global command_t
+    global command_wx
+    global command_wy
     global x_at_command
     global y_at_command
     global t_at_command
@@ -171,12 +175,19 @@ def command_process(data):
 
 
     # Store the scout info at command receival
+    t_at_command = rpy[2]
     x_at_command = scout_x
     y_at_command = scout_y
-    t_at_command = rpy[2]
     first_rot = False
     deslocation = False
     last_rot = False
+    
+    # Determine commands in world frame
+    #wx = x*cos + y*sin
+    #wy = -x*sin + y*cos
+    
+    command_wx = command_x*math.cos(t_at_command) + command_y*math.sin(t_at_command)
+    command_wy = -command_x*math.sin(t_at_command) + command_y*math.cos(t_at_command)
 
 
     # Generate velocity information
@@ -196,6 +207,8 @@ def scout_controller():
     global command_x
     global command_y
     global command_t
+    global command_wx
+    global command_wy
     global x_at_command
     global y_at_command
     global t_at_command
@@ -210,7 +223,7 @@ def scout_controller():
 
     while True:
         if  not first_rot:
-            # Hasn't done the First rotation
+            '''# Hasn't done the First rotation
             if command_x==0:
                 #x=0 -> sign(y)*90
                 if command_y != 0:
@@ -234,18 +247,20 @@ def scout_controller():
                 destination_orientation=destination_orientation+2*math.pi
 
             if abs(destination_orientation-rpy[2])<angle_threshold:
-                first_rot = True
+                first_rot = True'''
+            first_rot = True
         elif not deslocation:
             # Hasn't done the deslocation
-            linear_vel=default_scout_vel
+            #linear_vel=default_scout_vel
+            linear_vel=default_scout_vel*sign(command_wx)
             #ang_vel=???
             ang_vel=0
             scout_right_vel=linear_vel+ang_vel
             scout_left_vel=-(linear_vel-ang_vel)
             # Set velocities and counter accordingly to the desired distance
 
-            ahoy = dist(scout_x,scout_y,x_at_command+command_x, y_at_command+command_y)
-            print(ahoy)
+            ahoy = dist(scout_x,scout_y,x_at_command+command_wx, y_at_command+command_wy)
+            print(str(ahoy) + ';' + str(scout_x) + ';' + str(scout_y))
             if abs(ahoy)<dist_threshold:
                 deslocation = True
         elif not last_rot:
