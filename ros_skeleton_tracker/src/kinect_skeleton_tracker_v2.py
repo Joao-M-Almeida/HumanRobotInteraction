@@ -100,6 +100,7 @@ string_arm1=''
 string_walk=''
 string_hand=''
 string_elbow = ''
+handing_string = ''
 
 class gesture_publisher:
     pub = rospy.Publisher('/gestures', gesture, queue_size=10)
@@ -365,7 +366,11 @@ def hand(publ):
     lr = [Coord[9][0]-Coord[3][0],Coord[9][1]-Coord[3][1]]
     lr_prepend = [-lr[1],lr[0]]
     re = [Coord[9][0]-Coord[10][0],Coord[9][1]-Coord[10][1]]
-    cos_t = dotproduct(lr_prepend,re) / (length(lr_prepend)*length(re))
+    if(length(lr_prepend)!=0.0 and length(re)!=0.0):
+        cos_t = dotproduct(lr_prepend,re) / (length(lr_prepend)*length(re))
+    else:
+        cos_t = 0
+
     if cos_t > 0 :
         temp='elbow in front of body'
     else:
@@ -373,9 +378,10 @@ def hand(publ):
 
     if string_elbow!=temp:
         string_elbow=temp
-        #stdscr.addstr(len(FRAMES)+11, 0, string_elbow)
+        stdscr.addstr(len(FRAMES)+11, 0, string_elbow + '\t\t')
         publ.publish(string_elbow)
 
+    stdscr.refresh()
 
 def handing(publ):
 
@@ -383,7 +389,7 @@ def handing(publ):
     global handing_string
 
     temp = ''
-    if gama[0] > 75 and gama[0] < 105 and string_elbow == 'elbow in front of body' and alfa[0]>120:
+    if gama[0] > 60 and gama[0] < 140 and string_elbow == 'elbow in front of body' and alfa[0]>90 and beta[0]<70:
         temp = 'handing'
     else:
         temp = 'no handing'
@@ -410,7 +416,7 @@ if __name__ == '__main__':
 
     rate = rospy.Rate(10)
     while not rospy.is_shutdown():
-        master=1
+        master=2
 
         try:
             for f in range(0,len(FRAMES)):
