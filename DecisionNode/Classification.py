@@ -5,43 +5,48 @@ import numpy as np
 import time
 from sklearn.metrics import accuracy_score
 
-database_wave = pd.read_csv("/home/jmirandadealme/Documents/SistAut/HumanRobotInteraction/others/ModelTraining/waving.csv", skipinitialspace=True ,quotechar ="'")
-database_wave["t5"] = database_wave["t4"]-database_wave["t5"]
-database_wave["t4"] = database_wave["t3"]-database_wave["t4"]
-database_wave["t3"] = database_wave["t2"]-database_wave["t3"]
-database_wave["t2"] = database_wave["t1"]-database_wave["t2"]
-database_wave["t1"] = 0
+database = pd.read_csv("/home/jmirandadealme/Documents/SistAut/HumanRobotInteraction/others/TrainingData/total.txt", skipinitialspace=True ,quotechar ="'")
+
+database["t5"] = 0
+database["t4"] = 0
+database["t3"] = 0
+database["t2"] = 0
+database["t1"] = 0
+
+
 
 le = preprocessing.LabelEncoder()
-le.fit([0.0,'closing forearm','arm moving down','arm moving up','arm stopped', 'forearm stopped','hand above elbow','hand under elbow', 'no walking', 'opening forearm', 'walking backward','walking forward', 'waving', 'caling', 'handing',])
-database_wave["g1"]=le.transform(database_wave["g1"])
-database_wave["g2"]=le.transform(database_wave["g2"])
-database_wave["g3"]=le.transform(database_wave["g3"])
-database_wave["g4"]=le.transform(database_wave["g4"])
-database_wave["g5"]=le.transform(database_wave["g5"])
+le.fit([0.0,'closingforearm','armmovingdown','armmovingup','armstopped','forearmstopped','handaboveelbow', 'handunderelbow', 'nowalking','openingforearm','walkingbackward','walkingforward','waving','calling', 'handing',])
+database["g1"]=le.transform(database["g1"])
+database["g2"]=le.transform(database["g2"])
+database["g3"]=le.transform(database["g3"])
+database["g4"]=le.transform(database["g4"])
+database["g5"]=le.transform(database["g5"])
 
 
 # LABELS
-wave_labels = np.append(np.zeros((21,)),np.ones((20,)))
+labels = database["label"].values
 
 # Train
 
-Fsrc = database_wave.values
-Lsrc = wave_labels
+database.drop("label",axis=1,inplace=True)
+
+features = database.values
+labels = wave_labels
 svm_classf = SVC()
 start_time = time.time()
-svm_classf.fit(Fsrc,Lsrc)
+svm_classf.fit(features,labels)
 print("--- %s seconds ---" % (time.time() - start_time))
 
 # Predict
 
 start_time = time.time()
-LtrgSVM=svm_classf.predict(Fsrc)
+predict_labels=svm_classf.predict(features)
 print("--- %s seconds ---" % (time.time() - start_time))
-accuracy_score(Lsrc,LtrgSVM)
+accuracy_score(labels,predict_labels)
 
 # Cross Validation
 start_time = time.time()
-scores = cross_validation.cross_val_score(svm_classf, Fsrc, Lsrc, cv=10)
+scores = cross_validation.cross_val_score(svm_classf, features, labels, cv=10)
 print("--- %s seconds ---" % (time.time() - start_time))
 print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
