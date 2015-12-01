@@ -63,6 +63,62 @@ def action_controller():
 
         rate.sleep()
 
+def odom_process(data):
+    quaternion=[0,0,0,0]
+    global rpy
+    global scout_x
+    global scout_y
+    global my_lock
+    quaternion[0]=data.pose.pose.orientation.x
+    quaternion[1]=data.pose.pose.orientation.y
+    quaternion[2]=data.pose.pose.orientation.z
+    quaternion[3]=data.pose.pose.orientation.w
+    my_lock.acquire()
+    scout_x = data.pose.pose.position.x
+    scout_y = data.pose.pose.position.y
+    rpy = tf.transformations.euler_from_quaternion(quaternion)
+    my_lock.release()
+
+
+
+def new_movement(data):
+    moveit = data.movement
+    msg.data = ''
+    #Katana movements
+    if moveit.lower()=='waving':
+        msg.data = 'wave'
+
+    #nao esta definido ainda como movimento do katana
+    elif moveit.lower()=='grabbing':
+        msg.data = 'grab'
+
+    elif moveit.lower()=='high_five':
+        msg.data = 'high_five'
+
+    elif moveit.lower()=='low_five':
+        msg.data = 'low_five'
+
+    if msg.data != '':
+        kat_pub.publish(msg)
+        rospy.loginfo("Sending to Katana"+str(msg))
+        kinect_info.append((gesture.gesture,gesture.header.stamp.secs))
+
+
+    msg.x = ''
+    if moveit.lower()=='going':
+        msg.x=master_position[4][0]-scout_x-0.5     #0.5: zona pessoal
+    elif moveit.lower()=='going_back':
+        msg.x=-scout_x
+
+    if msg.x != '':
+        msg.y = 0
+        msg.theta = 0
+        #publisher do scout
+        scout_pub.publish(msg)
+        rospy.loginfo("Sending to Scout"+str(msg))
+        #kinect_info.append((gesture.gesture,gesture.header.stamp.secs))
+
+
 def goodbye():
     rospy.loginfo('Exiting...')
 
@@ -71,8 +127,10 @@ if __name__ == '__main__':
 
     try:
         rospy.init_node('hri_decision_node', anonymous=True)
-        rospy.Subscriber('/gestures', gesture, new_gesture)
+        #rospy.Subscriber('/gestures', gesture, new_gesture)
         rospy.Subscriber('/masterlocation', pose_msg, new_position)
+        rospy.Subscriber('/movements', movement, new_movement) #temos que criar a mensagem e o no
+        rospy.Subscriber('/odom', Odometry, odom_process)
         rate = rospy.Rate(0.5)
         rate.sleep()
 
