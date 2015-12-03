@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 
 import rospy
-##from ros_skeleton_tracker.msg import gesture
-##from ros_skeleton_tracker.msg import pose_msg
+from ros_skeleton_tracker.msg import gesture
+from ros_skeleton_tracker.msg import pose_msg
 from std_msgs.msg import String
 from geometry_msgs.msg import Pose2D
+from nav_msgs.msg import Odometry
 import threading
 import atexit
 
@@ -19,8 +20,6 @@ n_cmds = 4
 #prob_cmd = {}
 threshold = 0.8
 default_prob = 1.0/n_cmds
-
-var= 'NOP'
 
 master_position = [(0,0),(0,0),(0,0),(0,0),(0,0)]
 
@@ -52,15 +51,17 @@ def normallize_cmd_prob():
 
 def action_controller():
     global alive
+    global done
     rate = rospy.Rate(0.5)
     while(True):
         #rospy.loginfo("Kinect gestures: " + str(kinect_info))
         #rospy.loginfo("Master: " + str(master_position))
         for cmd, prob in commands.iteritems():
-            if prob > threshold:
+            if prob > threshold and done==1:
                 rospy.loginfo("Executing: " + str(cmd))
                 commands[cmd] = default_prob
                 normallize_cmd_prob()
+                done==0
 
         rate.sleep()
 
@@ -81,12 +82,9 @@ def odom_process(data):
     my_lock.release()
 
 def feedback(str_a):
-    global var
-    if str_a[0:5]=='Scout':
-        var = 'ahoy'
-    else:
-        #message from Katana
-        var = 'ahoy'
+    global done
+    done = 1
+
 
 def new_movement(data):
     moveit = data.movement
@@ -133,24 +131,22 @@ if __name__ == '__main__':
     try:
         rospy.init_node('hri_decision_node', anonymous=True)
         #rospy.Subscriber('/gestures', gesture, new_gesture)
-        ##rospy.Subscriber('/masterlocation', pose_msg, new_position)
-        ##rospy.Subscriber('/movements', movement, new_movement)
-        ##rospy.Subscriber('/odom', Odometry, odom_process)
+        rospy.Subscriber('/masterlocation', pose_msg, new_position)
+        rospy.Subscriber('/movements', String, new_movement)
+        rospy.Subscriber('/odom', Odometry, odom_process)
         rospy.Subscriber('/actionfeedback', String, feedback)
 
         rate = rospy.Rate(0.5)
 
-        while(True):
-            print var
-            rate.sleep()
-            rospy.spin()
+        ##while(True):
+        ##    print var
+        rate.sleep()
 
+        rospy.loginfo("Commands :" + str(commands))
 
-        #rospy.loginfo("Commands :" + str(commands))
-
-        #check_command = threading.Thread(target=action_controller)
-        #check_command.setDaemon(True)
-        #check_command.start()
+        check_command = threading.Thread(target=action_controller)
+        check_command.setDaemon(True)
+        check_command.start()
         rospy.spin()
     except rospy.ROSInterruptException:
         pass

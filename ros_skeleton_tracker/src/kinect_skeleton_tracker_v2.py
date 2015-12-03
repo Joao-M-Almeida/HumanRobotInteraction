@@ -378,10 +378,10 @@ def hand(publ):
 
     if string_elbow!=temp:
         string_elbow=temp
-        stdscr.addstr(len(FRAMES)+11, 0, string_elbow + '\t\t')
+        #stdscr.addstr(len(FRAMES)+11, 0, string_elbow + '\t\t')
         publ.publish(string_elbow)
 
-    stdscr.refresh()
+    #stdscr.refresh()
 
 def handing(publ):
 
@@ -416,7 +416,7 @@ if __name__ == '__main__':
 
     rate = rospy.Rate(10)
     while not rospy.is_shutdown():
-        master=2
+        master=1
 
         try:
             for f in range(0,len(FRAMES)):

@@ -29,6 +29,8 @@ joint_names = ['katana_motor1_pan_joint', 'katana_motor2_lift_joint', 'katana_mo
 
 pub = rospy.Publisher('/katana_arm_controller/joint_movement_action/goal', jmag, queue_size=10)
 
+pub1= rospy.Publisher('/actionfeedback',String)
+
 default_position = [-0.28,2,-2,-1.7,0,0,0]
 
 calibration_position = [-2.9,2.1,-2.15,-1.91,-2.87,0.29,0.29]
@@ -86,15 +88,21 @@ def execute_movement(position_sequence, delay_sequence):
 def command_process(data):
     rospy.loginfo('command received: ' + str(data))
     if data.data == 'wave':
-        slide()
+        waving()
+        #slide()
+        pub1.publish('DONE')
     elif data.data == 'low_five':
         low_five()
+        pub1.publish('DONE')
     elif data.data == 'high_five':
         high_five()
+        pub1.publish('DONE')
     elif data.data == 'clap':
         clapping()
+        pub1.publish('DONE')
     elif data.data == 'grabbing':
         grabbing()
+        pub1.publish('DONE')
     elif data.data == 'default':
         execute_movement([default_position], [10])
     elif data.data == 'calibration':
