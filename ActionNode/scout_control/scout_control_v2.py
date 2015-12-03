@@ -51,7 +51,7 @@ command_y = 0
 command_t = 0
 command_wx = 0
 command_wy = 0
-    
+
 x_at_command = 0
 y_at_command = 0
 t_at_command = 0
@@ -181,11 +181,11 @@ def command_process(data):
     first_rot = False
     deslocation = False
     last_rot = False
-    
+
     # Determine commands in world frame
     #wx = x*cos + y*sin
     #wy = -x*sin + y*cos
-    
+
     command_wx = command_x*math.cos(t_at_command) + command_y*math.sin(t_at_command)
     command_wy = -command_x*math.sin(t_at_command) + command_y*math.cos(t_at_command)
 
@@ -219,7 +219,7 @@ def scout_controller():
     #global dist_threshold
     #global angle_threshold
 
-
+    pub= rospy.Publisher('/actionfeedback',String)
 
     while True:
         if  not first_rot:
@@ -269,9 +269,11 @@ def scout_controller():
             # Set velocities and counter accordingly to the desired final orientation
 
             last_rot = True
+            pub.publish('DONE')
         else:
             scout_left_vel=0
             scout_right_vel=0
+
 
 
 def exit_handler():

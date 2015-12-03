@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 import rospy
-from ros_skeleton_tracker.msg import gesture
-from ros_skeleton_tracker.msg import pose_msg
+##from ros_skeleton_tracker.msg import gesture
+##from ros_skeleton_tracker.msg import pose_msg
 from std_msgs.msg import String
 from geometry_msgs.msg import Pose2D
 import threading
@@ -20,6 +20,8 @@ n_cmds = 4
 threshold = 0.8
 default_prob = 1.0/n_cmds
 
+var= 'NOP'
+
 master_position = [(0,0),(0,0),(0,0),(0,0),(0,0)]
 
 commands = {'wave': default_prob, 'low_five': default_prob, 'high_five': default_prob, 'clap': default_prob}
@@ -36,7 +38,6 @@ def new_gesture(gesture):
         kat_pub.publish(msg)
         rospy.loginfo("Sending to Katana"+str(msg))
     kinect_info.append((gesture.gesture,gesture.header.stamp.secs))
-
 
 def new_position(pose):
     master_position.pop(0)
@@ -79,7 +80,13 @@ def odom_process(data):
     rpy = tf.transformations.euler_from_quaternion(quaternion)
     my_lock.release()
 
-
+def feedback(str_a):
+    global var
+    if str_a[0:5]=='Scout':
+        var = 'ahoy'
+    else:
+        #message from Katana
+        var = 'ahoy'
 
 def new_movement(data):
     moveit = data.movement
@@ -88,7 +95,6 @@ def new_movement(data):
     if moveit.lower()=='waving':
         msg.data = 'wave'
 
-    #nao esta definido ainda como movimento do katana
     elif moveit.lower()=='grabbing':
         msg.data = 'grab'
 
@@ -116,7 +122,6 @@ def new_movement(data):
         #publisher do scout
         scout_pub.publish(msg)
         rospy.loginfo("Sending to Scout"+str(msg))
-        #kinect_info.append((gesture.gesture,gesture.header.stamp.secs))
 
 
 def goodbye():
@@ -128,18 +133,24 @@ if __name__ == '__main__':
     try:
         rospy.init_node('hri_decision_node', anonymous=True)
         #rospy.Subscriber('/gestures', gesture, new_gesture)
-        rospy.Subscriber('/masterlocation', pose_msg, new_position)
-        rospy.Subscriber('/movements', movement, new_movement) #temos que criar a mensagem e o no
-        rospy.Subscriber('/odom', Odometry, odom_process)
+        ##rospy.Subscriber('/masterlocation', pose_msg, new_position)
+        ##rospy.Subscriber('/movements', movement, new_movement)
+        ##rospy.Subscriber('/odom', Odometry, odom_process)
+        rospy.Subscriber('/actionfeedback', String, feedback)
+
         rate = rospy.Rate(0.5)
-        rate.sleep()
+
+        while(True):
+            print var
+            rate.sleep()
+            rospy.spin()
 
 
-        rospy.loginfo("Commands :" + str(commands))
+        #rospy.loginfo("Commands :" + str(commands))
 
-        check_command = threading.Thread(target=action_controller)
-        check_command.setDaemon(True)
-        check_command.start()
+        #check_command = threading.Thread(target=action_controller)
+        #check_command.setDaemon(True)
+        #check_command.start()
         rospy.spin()
     except rospy.ROSInterruptException:
         pass
