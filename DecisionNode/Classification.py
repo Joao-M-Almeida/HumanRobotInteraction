@@ -13,7 +13,7 @@ labels = database['label'].values
 database.drop("label",axis=1,inplace=True)
 features = database.values
 
-pca = PCA(n_components =17)
+pca = PCA(n_components =15)
 pca.fit(features)
 features = pca.transform(features)
 
