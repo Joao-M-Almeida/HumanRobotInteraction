@@ -105,6 +105,20 @@ if __name__ == '__main__':
     atexit.register(goodbye)
     rospy.init_node('hri_decision_node', anonymous=True)
 
+    '''import Tkinter as tk
+
+    def key(event):
+        print event.keysym
+        if event.keysym == 'Escape':
+            root.destroy()
+        print event.char
+
+    root = tk.Tk()
+    print "Press a key (Escape key to exit):"
+    root.bind_all('<Key>', key)
+    #root.withdraw()
+    root.mainloop()'''
+
     rate = rospy.Rate(0.5)
     rospy.Subscriber('/gestures', gesture, new_gesture)
     rospy.Subscriber('/masterlocation', pose_msg, new_position)

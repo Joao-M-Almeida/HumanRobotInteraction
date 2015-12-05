@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 
-
 '''
-    learning Node
+    Feature Node
 '''
 
 import rospy
@@ -85,9 +84,7 @@ def build_database(gesture,pose_x,pose_y, velx, vely):
     D_x    = pose_x
     D_y    = pose_y
 
-
-
-    # Assemble do feature vector
+    # Assembly feature vector
     feature_vector[0] = D_x
     feature_vector[1] = D_y
     feature_vector[2] = gesture.gesture
@@ -135,7 +132,7 @@ if __name__ == '__main__':
     atexit.register(goodbye)
     rospy.init_node('hri_decision_node', anonymous=True)
 
-    rate = rospy.Rate(0.5)
+    rate = rospy.Rate(10)
     rospy.Subscriber('/gestures', gesture, new_gesture)
     rospy.Subscriber('/masterlocation', pose_msg, new_position)
 
