@@ -29,7 +29,7 @@ joint_names = ['katana_motor1_pan_joint', 'katana_motor2_lift_joint', 'katana_mo
 
 pub = rospy.Publisher('/katana_arm_controller/joint_movement_action/goal', jmag, queue_size=10)
 
-pub1= rospy.Publisher('/actionfeedback',String)
+pub1= rospy.Publisher('/actionfeedback',String, queue_size=1)
 
 default_position = [-0.28,2,-2,-1.7,0,0,0]
 
@@ -39,6 +39,8 @@ upright = [-0.28,1.57,0,0,0,-0.44,-0.44]
 
 slide_ready = [-0.28,1.57,-0.35,1.4,0,-0.44,-0.44]
 slide_pass = [-0.28,1.57,-0.35,1.585,0,-0.44,-0.44]
+
+
 def slide():
     position_sequence = [slide_ready,slide_pass,slide_ready]
     delay_sequence = [1,0.5,2]
@@ -113,21 +115,24 @@ if __name__ == '__main__':
     try:
         rospy.init_node('katana_controller', anonymous=True)
         rospy.Subscriber('/katana_commands/', String, command_process)
-        rate = rospy.Rate(0.5)
+        rate = rospy.Rate(2)
         rate.sleep()
-        execute_movement([calibration_position], [10])
-        rospy.loginfo('Test Going to upright')
-        execute_movement([upright], [10])
-        rospy.loginfo('Test Going to pass slide')
-        slide()
-        rospy.loginfo('Done')
+        #execute_movement([calibration_position], [10])
+        #rospy.loginfo('Test Going to upright')
+        #execute_movement([upright], [10])
+        #rospy.loginfo('Test Going to pass slide')
+        #slide()
+        #rospy.loginfo('Done')
 
         #execute_movement([[-0.28,1.57,0,0,0,-0.2,-0.2]],[10])
         #low_five()
         #high_five()
         #waving()
         #clapping()
+        rospy.loginfo('Go to default')
         #execute_movement([default_position], [10])
+        clapping()
+        rospy.loginfo('Done')
         rospy.spin()
     except rospy.ROSInterruptException:
         pass
