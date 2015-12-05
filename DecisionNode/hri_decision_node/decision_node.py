@@ -46,7 +46,7 @@ def train_classifier():
     global pca
     global classf
 
-    database = pd.read_csv( "/home/jmirandadealme/Documents/SistAut/HumanRobotInteraction/others/TrainingData/todos2.txt", quotechar ="'")
+    database = pd.read_csv( "/home/jmirandadealme/Documents/SistAut/HumanRobotInteraction/others/TrainingData/todos_new.csv", quotechar ="'")
 
     labels = database['label'].values
     database.drop("label",axis=1,inplace=True)

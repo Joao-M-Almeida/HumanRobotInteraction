@@ -5,7 +5,7 @@ from sklearn.svm import SVC
 from sklearn.decomposition import PCA
 
 
-database = pd.read_csv( "/home/jmirandadealme/Documents/SistAut/HumanRobotInteraction/others/TrainingData/todos2.txt", quotechar ="'")
+database = pd.read_csv( "/home/jmirandadealme/Documents/SistAut/HumanRobotInteraction/others/TrainingData/todos_new.csv", quotechar ="'")
 
 
 
