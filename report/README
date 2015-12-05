@@ -1,4 +1,4 @@
-***Ideas for the report***
+#Ideas for the report
 
   **Possible improvements:**
     - The graph probabilities between actions are updated during the runs of the model using a reinforcement learning approach;
