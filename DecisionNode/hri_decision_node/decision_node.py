@@ -21,7 +21,7 @@ n_cmds = 4
 threshold = 0.8
 default_prob = 1.0/n_cmds
 
-master_position = [(0,0),(0,0),(0,0),(0,0),(0,0)]
+master_position = [(0,0), (0, 0), (0, 0), (0, 0), (0, 0)]
 
 commands = {'wave': default_prob, 'low_five': default_prob, 'high_five': default_prob, 'clap': default_prob}
 
@@ -61,7 +61,7 @@ def action_controller():
                 rospy.loginfo("Executing: " + str(cmd))
                 commands[cmd] = default_prob
                 normallize_cmd_prob()
-                done==0
+                done == 0
 
         rate.sleep()
 
