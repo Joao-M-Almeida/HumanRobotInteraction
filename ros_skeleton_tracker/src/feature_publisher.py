@@ -22,17 +22,33 @@ y=0.0
 ngest  = 5
 data_base=[[0.0 for k in xrange(ngest*4 + 2)]]
 
+gesture_dict = {
+                '0.0': 0,
+                'closing forearm': 1,
+                'arm moving down': 2,
+                'arm moving up': 3,
+                'arm stopped': 4,
+                'forearm stopped': 5,
+                'hand above elbow': 6,
+                'hand under elbow': 7,
+                'opening forearm': 8,
+                'walking backward': 9,
+                'walking forward': 10,
+                'waving': 11,
+                'no walking': 12,
+                'calling': 13,
+                'handing': 14,
+                'elbow behind body': 15,
+                'elbow in front of body': 16
+                }
 
 
-'''
-    wave        = 0
-    low_five    = 1
-    high_five   = 2
-    clap        = 3
-    call        = 4
-    grasp       = 5
-    nop         = 6
-    '''
+class feature_publisher:
+    pub = rospy.Publisher('/features', String, queue_size=10)
+
+    @staticmethod
+    def publish(message):
+        feature_publisher.pub.publish(message)
 
 def new_position(pose):
     global x
@@ -69,6 +85,8 @@ def build_database(gesture,pose_x,pose_y, velx, vely):
     D_x    = pose_x
     D_y    = pose_y
 
+
+
     # Assemble do feature vector
     feature_vector[0] = D_x
     feature_vector[1] = D_y
@@ -85,18 +103,30 @@ def build_database(gesture,pose_x,pose_y, velx, vely):
     feature_vector[15]=feature_vector[15]-feature_vector[7]
     feature_vector[19]=feature_vector[19]-feature_vector[7]
 
+    #publish to topic
+    print feature_vector[2]
+    for key, value in gesture_dict.iteritems():
+        if(feature_vector[2] == key):
+            feature_vector[2] = value
+            break
+    else:
+        feature_vector[2] = 0
 
-    #save to file
-    file_out = open('build_database.txt', 'a')
-    file_out.write(str(feature_vector) + '\n')
-    file_out.close()
+    print feature_vector[2]
 
+    feature_string = str(feature_vector)
+
+    feature_string = feature_string.replace(" ", "")
+    feature_string = feature_string.replace("[", "")
+    feature_string = feature_string.replace("]", "")
+
+    feature_publisher.publish(feature_string)
+
+    #store in data_base
     data_base.append(feature_vector)
 
     x_past = D_x
     y_past = D_y
-
-
 
 def goodbye():
     rospy.loginfo('Exiting...')
