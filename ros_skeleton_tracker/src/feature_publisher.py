@@ -101,7 +101,7 @@ def build_database(gesture,pose_x,pose_y, velx, vely):
     feature_vector[19]=feature_vector[19]-feature_vector[7]
 
     #publish to topic
-    print feature_vector[2]
+    #print feature_vector[2]
     for key, value in gesture_dict.iteritems():
         if(feature_vector[2] == key):
             feature_vector[2] = value
@@ -109,7 +109,7 @@ def build_database(gesture,pose_x,pose_y, velx, vely):
     else:
         feature_vector[2] = 0
 
-    print feature_vector[2]
+    #print feature_vector[2]
 
     feature_string = str(feature_vector)
 
