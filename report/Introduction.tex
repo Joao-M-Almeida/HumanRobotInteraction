@@ -1,0 +1,16 @@
+
+\section{Introduction}
+% no \IEEEPARstart
+The main goal of this project is to make a mobile robot display human-aware behaviours, based on the predicted behaviours of the human the robot is interacting with.\\
+
+To achieve this goal there are some issues that need to be solved at first, such as: learning how to work with the software ROS (Robot Operating System), making the robot mobile, collecting data from the camera, interpret this data, create an algorithm to make a more human-like response from the robotic system and finally integrate all these parts of the project.\\
+
+It is essential to have a good understanding of the ROS software, because in is the foundation of the project. ROS allows to use packages for the robots and camera, as well as creates an interface that facilitates the communication between all the system parts.\\
+
+Considering the second point mentioned - making the robot mobile - there is the need to use already created ROS packages that give us drivers both for Scout as for Katana. Furthermore the movements that both robots do had to be programmed and controlled.\\
+
+To collect data from the camera a ROS package was used, that extracts the position of diverse body parts of the human body. With that information a program was designed to interpret the movements, based on the different positions that were being read.\\
+
+The algorithm used for the prediction part is based on machine learning knowledge. A database was created to "train" the robot system, where are included all the gestures and movements of the human user, as well as the action that the system should take when such movement is acknowledge. To improve the prediction step............................
+% You must have at least 2 lines in the paragraph with the drop letter
+% (should never be an issue)

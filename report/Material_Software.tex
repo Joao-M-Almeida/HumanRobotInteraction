@@ -1,0 +1,17 @@
+
+\section{Material and Software Used}
+For this project it was allowed to use a RGB-D camera and a mobile robot. The camera used was the Kinect and the mobile robot consists of a robotic base, Scout, and a robotic arm, Katana.\\
+
+\subsection{Kinect}
+Along with the Kinect camera, a ROS package called \textit{openni-tracker} was used to detect the human body. This package gives as output the position of several points of the user's body, such as: head, neck, shoulders, elbows, hands, torso, hips, knees and feet.
+\begin{figure}[!h]
+	\centering
+		\includegraphics[scale=0.5]{./Skeleton_tracker}
+	\caption{Points given by the \textit{openni-tracker}}
+\end{figure}\\
+
+\subsection{Katana}
+To operate the Katana we used the already existent ROS package, \textit{Katana Driver}. Using this driver it is possible to power off the motors, allowing manual set of the robot positions and a reading of the maximum and minimum values for the different joints. After concluding this step it is possible to send commands to the Katana with the value for each joint position as well as the time to execute the movement. Sending a combination of these commands, it is possible for the Katana to reproduce simple human-like gestures.\\
+
+\subsection{Scout}
+Having in mind that the Scout is already an older robot it is difficult to find a ROS package which allows the inclusion of Scout in it, therefore we chose to program our own controller using the Scout driver. The driver allows us to read the odometry of the robot. In addition to the odometry, knowing that Scout receives as a command a distance to a certain place, the programmed controller is based on the comparison of the odometry with the distance that the robot was told to move. Although we only implemented this controller for one dimension movements, because there were some troubles with the odometry measurements associated with the needed rotation for the two dimensional movement. Considering that the main goal of the project is not to have a perfectly mobile robot, we decided to leave this point for future refinement of the system.\\
