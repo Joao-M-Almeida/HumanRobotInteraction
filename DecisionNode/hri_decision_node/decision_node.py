@@ -27,7 +27,7 @@ import tf
 
 alive = True
 n_cmds = 7
-threshold = 0.4
+threshold = 0.5
 default_prob = 1.0/n_cmds
 done = 1
 increment = 0.3
@@ -38,7 +38,7 @@ scout_y = 0.0
 
 my_lock = threading.Lock()
 
-last_cmd = -1
+last_cmd = 1
 
 master_position = [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0)]
 
@@ -57,10 +57,7 @@ def do_nop():
     global done
     rospy.loginfo("Executed")
     done = 1
-    for cmd1, prob1 in commands.iteritems():
-        commands[cmd1] = default_prob
-        if(cmd1 == 1):
-            commands[cmd1] = commands[cmd1]*0.1
+    initialize_cmd_prob()
 
 def do_wave():
     rospy.loginfo("             Executing: WAVE")
@@ -100,10 +97,7 @@ def do_go():
     time.sleep(1)
     rospy.loginfo("Executed")
     done = 1
-    for cmd1, prob1 in commands.iteritems():
-        commands[cmd1] = default_prob
-        if(cmd1 == 1):
-            commands[cmd1] = commands[cmd1]*0.1
+    initialize_cmd_prob()
 
 def do_go_back():
     rospy.loginfo("             Executing: GO BACK")
@@ -121,10 +115,7 @@ def do_go_back():
     time.sleep(1)
     rospy.loginfo("Executed")
     done = 1
-    for cmd1, prob1 in commands.iteritems():
-        commands[cmd1] = default_prob
-        if(cmd1 == 1):
-            commands[cmd1] = commands[cmd1]*0.1
+    initialize_cmd_prob()
 
 
 def train_classifier():
@@ -195,15 +186,9 @@ def action_controller():
                     elif cmd == 7:
                         do_go_back()
                     last_cmd = cmd
-                    for cmd1, prob1 in commands.iteritems():
-                        commands[cmd1] = default_prob
-                        if(cmd1 == 1):
-                            commands[cmd1] = commands[cmd1]*0.1
+                    initialize_cmd_prob()
                 else:
-                    for cmd1, prob1 in commands.iteritems():
-                        commands[cmd1] = default_prob
-                        if(cmd1 == 1):
-                            commands[cmd1] = commands[cmd1]*0.1
+                    initialize_cmd_prob()
         rate.sleep()
 
 '''
@@ -225,15 +210,38 @@ def odom_process(data):
     rpy = tf.transformations.euler_from_quaternion(quaternion)
     my_lock.release()
 
+
+def initialize_cmd_prob():
+    global last_cmd
+    global commands
+    if(last_cmd == 1):
+        commands = {1: default_prob, 2: default_prob, 3: default_prob, 4: 1.0/14, 5: default_prob, 6: 3/14, 7: default_prob}
+    elif(last_cmd == 2):
+        commands = {1: default_prob, 2: 0, 3: 0, 4: 1.0/7, 5: 3.0/7, 6: 2/7, 7: 0}
+    elif(last_cmd == 3):
+        commands = {1: 1.0/6, 2: 1.0/6, 3: 0, 4: 1.0/6, 5: 1.0/6, 6: 1.0/6, 7: 1.0/6}
+    elif(last_cmd == 4):
+        commands = {1: 2.0/7, 2: 0, 3: 0, 4: 0, 5: 0, 6: 3.0/7, 7: 3.0/7}
+    elif(last_cmd == 5):
+        commands = {1: 1.0/14, 2: 0, 3: 0, 4: 2.0/14, 5: 0, 6: 3.0/7, 7: 3.0/14}
+    elif(last_cmd == 6):
+        commands = {1: 2.0/7, 2: 0, 3: 1.0/7, 4: 1.0/7, 5: 0, 6: 0, 7: 3.0/7}
+    elif(last_cmd == 7):
+        commands = {1: 1.0/6, 2: 1.0/6, 3: 1.0/6, 4: 1.0/6, 5: 1.0/6, 6: 1.0/6, 7: 0}
+    else:
+        for cmd1, prob1 in commands.iteritems():
+            commands[cmd1] = default_prob
+            if(cmd1 == 1):
+                commands[cmd1] = commands[cmd1]*0.1
+        normallize_cmd_prob()
+
+
 def feedback(str_a):
     global done
     done = 1
     rospy.loginfo("Executed")
-    for cmd1, prob1 in commands.iteritems():
-        commands[cmd1] = default_prob
-        if(cmd1 == 1):
-            commands[cmd1] = commands[cmd1]*0.1
-    normallize_cmd_prob()
+    initialize_cmd_prob()
+
 
 '''
 def new_movement(data):
