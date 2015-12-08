@@ -130,8 +130,8 @@ if __name__ == '__main__':
         #waving()
         #clapping()
         rospy.loginfo('Go to default')
-        #execute_movement([default_position], [10])
-        clapping()
+        execute_movement([default_position], [10])
+        #clapping()
         rospy.loginfo('Done')
         rospy.spin()
     except rospy.ROSInterruptException:
