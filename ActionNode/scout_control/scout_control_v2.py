@@ -31,12 +31,14 @@ import math
 import tf
 import threading
 import atexit
+from std_msgs.msg import String
+
 
 default_scout_vel = 300
 d = 26.5
 r = 10
 publish_rate = 0.25
-dist_threshold = 0.05
+dist_threshold = 0.15
 angle_threshold = 0.1
 
 rpy = [0,0,0]
@@ -219,9 +221,10 @@ def scout_controller():
     #global dist_threshold
     #global angle_threshold
 
-    pub= rospy.Publisher('/actionfeedback',String)
+    pub= rospy.Publisher('/actionfeedback',String,queue_size=1)
 
     while True:
+        time.sleep(0.2)
         if  not first_rot:
             '''# Hasn't done the First rotation
             if command_x==0:
@@ -260,7 +263,7 @@ def scout_controller():
             # Set velocities and counter accordingly to the desired distance
 
             ahoy = dist(scout_x,scout_y,x_at_command+command_wx, y_at_command+command_wy)
-            print(str(ahoy) + ';' + str(scout_x) + ';' + str(scout_y))
+            rospy.loginfo( "dist = " + str(ahoy))
             if abs(ahoy)<dist_threshold:
                 deslocation = True
         elif not last_rot:
