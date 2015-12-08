@@ -78,20 +78,28 @@ def do_grab():
 def do_go():
     rospy.loginfo("             Executing: GO")
     global done
-    time.sleep(1)
+    global scout_x
+    global master_position
+
+    msg = Pose2D()
+    msg.x=master_position[4][0]-scout_x-0.5     #0.5: zona pessoal
+
+    scout_pub.publish(msg);
+    '''time.sleep(1)
     rospy.loginfo("Executed")
     done = 1
     for cmd1, prob1 in commands.iteritems():
-        commands[cmd1] = default_prob
+        commands[cmd1] = default_prob'''
 
 def do_go_back():
     rospy.loginfo("             Executing: GO BACK")
     global done
-    time.sleep(1)
-    rospy.loginfo("Executed")
-    done = 1
-    for cmd1, prob1 in commands.iteritems():
-        commands[cmd1] = default_prob
+    global scout_x
+
+    msg = Pose2D()
+    msg.x=-scout_x
+
+    scout_pub.publish(msg);
 
 
 def train_classifier():
@@ -99,7 +107,7 @@ def train_classifier():
     global pca
     global classf
 
-    database = pd.read_csv( "/home/jmirandadealme/Documents/SistAut/HumanRobotInteraction/others/TrainingData/TUDO2.csv", quotechar ="'")
+    database = pd.read_csv( "/home/filipe/Documents/SisAut/HumanRobotInteraction/others/TrainingData/TUDO2.csv", quotechar ="'")
 
     labels = database['label'].values
     database.drop("label",axis=1,inplace=True)
