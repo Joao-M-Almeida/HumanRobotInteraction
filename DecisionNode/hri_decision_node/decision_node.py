@@ -13,6 +13,7 @@ from sklearn.svm import SVC
 from sklearn.decomposition import PCA
 import numpy as np
 import time
+import tf
 
 '''
     nop = 1
@@ -31,6 +32,12 @@ default_prob = 1.0/n_cmds
 done = 1
 increment = 0.3
 
+rpy = [0.0, 0.0, 0.0]
+scout_x = 0.0
+scout_y = 0.0
+
+my_lock = threading.Lock()
+
 last_cmd = -1
 
 master_position = [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0)]
@@ -43,16 +50,17 @@ scout_pub = rospy.Publisher('/scout_commands', Pose2D, queue_size=10)
 kinect_info = []
 
 pca = PCA(n_components = 15)
-classf = SVC()
+classf = SVC(class_weight = 'auto')
 
 def do_nop():
     rospy.loginfo("             Executing: NOP")
     global done
-    time.sleep(1)
     rospy.loginfo("Executed")
     done = 1
     for cmd1, prob1 in commands.iteritems():
         commands[cmd1] = default_prob
+        if(cmd1 == 1):
+            commands[cmd1] = commands[cmd1]*0.1
 
 def do_wave():
     rospy.loginfo("             Executing: WAVE")
@@ -78,28 +86,45 @@ def do_grab():
 def do_go():
     rospy.loginfo("             Executing: GO")
     global done
+    global my_lock
     global scout_x
     global master_position
 
     msg = Pose2D()
+    my_lock.acquire()
+    velx = master_position[4][0] - master_position[0][0]
     msg.x=master_position[4][0]-scout_x-0.5     #0.5: zona pessoal
+    my_lock.release()
 
     scout_pub.publish(msg);
-    '''time.sleep(1)
+    time.sleep(1)
     rospy.loginfo("Executed")
     done = 1
     for cmd1, prob1 in commands.iteritems():
-        commands[cmd1] = default_prob'''
+        commands[cmd1] = default_prob
+        if(cmd1 == 1):
+            commands[cmd1] = commands[cmd1]*0.1
 
 def do_go_back():
     rospy.loginfo("             Executing: GO BACK")
     global done
+    global my_lock
     global scout_x
 
     msg = Pose2D()
+    my_lock.acquire()
     msg.x=-scout_x
+    my_lock.release()
 
     scout_pub.publish(msg);
+
+    time.sleep(1)
+    rospy.loginfo("Executed")
+    done = 1
+    for cmd1, prob1 in commands.iteritems():
+        commands[cmd1] = default_prob
+        if(cmd1 == 1):
+            commands[cmd1] = commands[cmd1]*0.1
 
 
 def train_classifier():
@@ -172,9 +197,13 @@ def action_controller():
                     last_cmd = cmd
                     for cmd1, prob1 in commands.iteritems():
                         commands[cmd1] = default_prob
+                        if(cmd1 == 1):
+                            commands[cmd1] = commands[cmd1]*0.1
                 else:
                     for cmd1, prob1 in commands.iteritems():
                         commands[cmd1] = default_prob
+                        if(cmd1 == 1):
+                            commands[cmd1] = commands[cmd1]*0.1
         rate.sleep()
 
 '''
@@ -202,7 +231,9 @@ def feedback(str_a):
     rospy.loginfo("Executed")
     for cmd1, prob1 in commands.iteritems():
         commands[cmd1] = default_prob
-
+        if(cmd1 == 1):
+            commands[cmd1] = commands[cmd1]*0.1
+    normallize_cmd_prob()
 
 '''
 def new_movement(data):

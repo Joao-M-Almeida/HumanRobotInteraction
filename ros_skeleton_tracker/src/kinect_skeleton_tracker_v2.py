@@ -106,13 +106,6 @@ class gesture_publisher:
     pub = rospy.Publisher('/gestures', gesture, queue_size=10)
     gestures = gesture()
 
-    #def __init__(self):
-        #pub = rospy.Publisher('/gestures', pose_msg, queue_size=10)
-        #gestures = pose_msg()
-        #self.gestures.header.stamp = rospy.Time.now()
-        #self.gestures.gesture='ahoy!'
-        #self.pub.publish(self.gestures)
-
     def publish(self, message):
         self.gestures.header.stamp = rospy.Time.now()
         self.gestures.gesture=message
