@@ -63,12 +63,12 @@ def high_five():
 
 def low_five():
     position_sequence = [[-0.28,1.4,-2.2,0,0,-0.2,-0.2], [-0.28,1.57,0,0,0,-0.2,-0.2], default_position]
-    delay_sequence = [2.5,6.5,6]
+    delay_sequence = [2.5,3.5,3.5]
     execute_movement(position_sequence, delay_sequence)
 
 def grabbing():
-    position_sequence = [[-0.28,1.57,-1,0,1.62,0,0],[-0.28,1.57,-1,0,1.62,-0.3,-0.3], default_position]
-    delay_sequence = [5,3,8]
+    position_sequence = [[-0.28,1.57,-1,0,1.62,0,0],[-0.28,1.57,-1,0,1.62,-0.44,-0.44], default_position]
+    delay_sequence = [4,2.5,4]
     execute_movement(position_sequence, delay_sequence)
 
 def execute_movement(position_sequence, delay_sequence):
