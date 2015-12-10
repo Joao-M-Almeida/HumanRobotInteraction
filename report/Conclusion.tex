@@ -1,1 +1,25 @@
 \section{Conclusion}
+After the experimental results there are clearly some pros \& cons about the implemented solution, such as:\\
+
+Pros:
+\begin{itemize}
+\item Fast (small processing needed)
+\item Scalable - with some improvements it should be able to identify gestures not explicitly programmed
+\item Allows the incorporation of both explicit and implicit knowledge (which is impossible with an hand programmed solution)
+\end{itemize}
+Cons:
+\begin{itemize}
+\item There must exist a training set
+\item Hard to evaluate if the robot action is predicted or just a reaction to an user's action
+\item Hard to predict performance before complete implementation
+\item The features used in this project may not be the best ones
+\end{itemize}
+
+As in all engineering projects, there is always room for improvements. In this case, the suggested improvements are the following:
+\begin{itemize}
+\item Train Classifier with finer features (for instance, calculate angles between all joints given by the skeleton tracker, or even use all the raw data from the tracker)
+\item Train Classifier with features with a constant time interval between samples
+\item Incorporate Laser Range Finder, Sonar and Kinect Audio Data
+\item Use Kinect to track \textit{Adele}
+\item Program the 2-Dimensions controller for Scout.
+\end{itemize}
