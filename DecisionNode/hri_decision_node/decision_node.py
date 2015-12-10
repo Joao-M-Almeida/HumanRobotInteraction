@@ -90,14 +90,11 @@ def do_go():
     msg = Pose2D()
     my_lock.acquire()
     velx = master_position[4][0] - master_position[0][0]
-    msg.x=master_position[4][0]-scout_x-0.5     #0.5: zona pessoal
+    #msg.x=(master_position[4][0]-scout_x)/2-0.5     #0.5: zona pessoal
+    msg.x=0.5
     my_lock.release()
-
     scout_pub.publish(msg);
-    time.sleep(1)
-    rospy.loginfo("Executed")
-    done = 1
-    initialize_cmd_prob()
+
 
 def do_go_back():
     rospy.loginfo("             Executing: GO BACK")
@@ -107,7 +104,8 @@ def do_go_back():
 
     msg = Pose2D()
     my_lock.acquire()
-    msg.x=-scout_x
+    msg.x=0
+    #msg.x=-scout_x
     my_lock.release()
 
     scout_pub.publish(msg);
@@ -123,7 +121,7 @@ def train_classifier():
     global pca
     global classf
 
-    database = pd.read_csv( "/home/filipe/Documents/SisAut/HumanRobotInteraction/others/TrainingData/TUDO2.csv", quotechar ="'")
+    database = pd.read_csv( "/home/filipe/Documents/SisAut/HumanRobotInteraction/others/TrainingData/TUDO3.csv", quotechar ="'")
 
     labels = database['label'].values
     database.drop("label",axis=1,inplace=True)
