@@ -1,6 +1,21 @@
 \section{Our Structure}
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.5\columnwidth]{./OurStructure.png}
+    \caption{Adele's Structure}
+    \label{fig:adele_structure}
+\end{figure}
 
 \subsection{Kinect Node: Gestures}
+Gesture recognition can be performed by tracking the movements of the different parts of the body. Once a stable detection of the joints is made, following them is the starting point towards the gesture recognition. 
+
+Using a tracking software, the stable detection was achieved using a median filter of 5 samples.  Extracting these features from the image allow the construction of small movements and/or complete gestures. From points representing joints it's straightforward to use vectors to represent parts of the body like arm and forearm. Relations between them, such as angles or distances perform a good way to detect movements independent from the camera's referential.  
+
+Not only the dislocation of the joints positions but also features as velocities and accelerations are detected. This way small movements are recognize as opening and closing the forearm or the arm moving up as well as moving down. In this work the goal is the prevision of gestures, therefore it is fundamental to detect small movements from which the gesture is built. The small movements include the variation position of the hand regarding the elbow, the position of the elbow regarding the torso, the amplitude between forearm and arm and the amplitude of the arm regarding the torso. More than one gesture can be built using the same small movements.
+
+In order to help the system recognizing more accurately the gestures we included in this work the detection of waving, calling and handing gestures using the movements previously described.
+
+Furthermore, it is also included detection of the position of the person in the world frame and the person's velocity. As for simplifying purposes it was decided to only work in one spatial dimension, the position is detected by computing the distance between the person and the kinect camera based on the mean of the points given by the hips, neck and torso. 
 
 \subsection{Action Node: Katana \& Scout Movement}
 \subsubsection{Katana}
@@ -63,3 +78,38 @@ The control loop that we implemented looks as shown in figure \ref{fig:scout_loo
 \end{figure}
 
 \subsection{Decision Node: Probabilistic Model}
+hello, its me\dots
+
+\begin{table}[!h]
+\centering
+\label{tab:expected_response}
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Person gesture/movement} & \textbf{What we expect Adele to do?} \\ \hline
+Waving                           & Wave                                 \\
+Handing an object                & Grabbing                             \\
+Calling                          & Go meet user                         \\
+Go away                          & Return to home                       \\
+High-Five                        & Low-Five                             \\
+Low-Five                         & High-Five                            \\
+Random                           & NOP                                  \\ \hline
+\end{tabular}
+\caption{Expected response}
+\end{table}
+
+
+\begin{table}[]
+\centering
+\begin{tabular}{cccccccc}
+Previous|Next                        & \textbf{NOP} & \textbf{Wave} & \textbf{H5} & \textbf{L5} & \textbf{Go} & \textbf{Grab} & \textbf{Return} \\ \cline{2-8} 
+\multicolumn{1}{c|}{\textbf{NOP}}    & 1/7          & 1/7           & 1/7         & 1/14        & 1/7         & 3/14          & 1/7             \\
+\multicolumn{1}{c|}{\textbf{Wave}}   & 1/7          & 0             & 0           & 1/7         & 3/7         & 2/7           & 0               \\
+\multicolumn{1}{c|}{\textbf{H5}}     & 1/6          & 1/6           & 0           & 1/6         & 1/6         & 1/6           & 1/6             \\
+\multicolumn{1}{c|}{\textbf{L5}}     & 2/7          & 0             & 0           & 0           & 0           & 2/7           & 3/7             \\
+\multicolumn{1}{c|}{\textbf{Go}}     & 1/14         & 0             & 1/7         & 1/7         & 0           & 3/7           & 3/14            \\
+\multicolumn{1}{c|}{\textbf{Grab}}   & 2/7          & 0             & 1/7         & 1/7         & 0           & 0             & 3/7             \\
+\multicolumn{1}{c|}{\textbf{Return}} & 1/6          & 1/6           & 1/6         & 1/6         & 1/6         & 1/6           & 0              
+\end{tabular}
+\caption{My caption}
+\label{my-label}
+\end{table}

@@ -214,13 +214,13 @@ def initialize_cmd_prob():
     if(last_cmd == 1):
         commands = {1: default_prob, 2: default_prob, 3: default_prob, 4: 1.0/14, 5: default_prob, 6: 3/14, 7: default_prob}
     elif(last_cmd == 2):
-        commands = {1: default_prob, 2: 0, 3: 0, 4: 1.0/7, 5: 3.0/7, 6: 2/7, 7: 0}
+        commands = {1: default_prob, 2: 0, 3: 0, 4: 1.0/7, 5: 3.0/7, 6: 2.0/7, 7: 0}
     elif(last_cmd == 3):
         commands = {1: 1.0/6, 2: 1.0/6, 3: 0, 4: 1.0/6, 5: 1.0/6, 6: 1.0/6, 7: 1.0/6}
     elif(last_cmd == 4):
-        commands = {1: 2.0/7, 2: 0, 3: 0, 4: 0, 5: 0, 6: 3.0/7, 7: 3.0/7}
+        commands = {1: 2.0/7, 2: 0, 3: 0, 4: 0, 5: 0, 6: 2.0/7, 7: 3.0/7}
     elif(last_cmd == 5):
-        commands = {1: 1.0/14, 2: 0, 3: 0, 4: 2.0/14, 5: 0, 6: 3.0/7, 7: 3.0/14}
+        commands = {1: 1.0/14, 2: 0, 3: 1.0/7, 4: 1.0/7, 5: 0, 6: 3.0/7, 7: 3.0/14}
     elif(last_cmd == 6):
         commands = {1: 2.0/7, 2: 0, 3: 1.0/7, 4: 1.0/7, 5: 0, 6: 0, 7: 3.0/7}
     elif(last_cmd == 7):
