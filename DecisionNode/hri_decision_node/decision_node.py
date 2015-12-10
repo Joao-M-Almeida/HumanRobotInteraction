@@ -95,7 +95,6 @@ def do_go():
     my_lock.release()
     scout_pub.publish(msg);
 
-
 def do_go_back():
     rospy.loginfo("             Executing: GO BACK")
     global done
