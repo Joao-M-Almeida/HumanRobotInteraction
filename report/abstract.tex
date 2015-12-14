@@ -1,11 +1,19 @@
 % As a general rule, do not put math, special symbols or citations
 % in the abstract
 \begin{abstract}
-Within the framework of this project, in order to be able to have an interaction between the human user and the robot it was used a Kinect camera, the Scout base robot and the Katana arm.\\
-The Kinect was used for the system to learn informations about the outer world, in this case to learn about positions and movements of the user, with help of a skeleton-tracker software.\\
-For controlling the Scout a simple controller was created that allows the robot to move forward and backwards.\\
-The Katana represents one big part of the robot interaction, given that the robotic arm has a lot of movement possibilities being therefore possible to replicate human-like movements/behaviours.\\
-Between the input information coming from the Kinect and the output provided by the Scout and Katana a machine learning algorithm was developed to introduce the prevision part of the project to the whole system.
+%Within the framework of this project, in order to be able to have an interaction between the human user and the robot it was used a Kinect camera, the Scout base robot and the Katana 300 6M180.
+This paper presents an approach to human robot interaction using machine learning techniques to analyze and predict sequences of human movements and gestures.
+
+The autonomous system used for this project consisted of a customized \textit{Nomadic Scout} differential drive platform (\emph{Scout}), a  \textit{Katana 300 6M180} robotic arm (\textit{Katana}) and a \textit{Kinect} camera.
+The \textit{Kinect} was used by the system to collect information about the world, in this case to track the position and movements of the user. From the raw camera information an algorithm was implemented to track the user and then detect several gestures. 
+The Scout was controlled to allow the autonomous system to move in a single dimension to allow the system to approach and move away from the user.
+The \textit{Katana} arm is the main interaction point between the system and the human, given that the robotic arm has a lot of movement possibilities and was used to replicate human-like behaviors. 
+
+To serve as data for the machine learning algorithm a set of sensor information was hand labeled. Based on this a \textit{Support Vector Machine} was trained to predict the next command to give to the autonomous system.
+
+The results from the project are inconclusive and this approach demands further analysis to determine its value.
+
+
 \end{abstract}
 
 % no keywords
