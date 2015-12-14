@@ -1,18 +1,52 @@
 
 \section{Material and Software Used}
-For this project it was allowed to use a RGB-D camera and a mobile robot. The camera used was the Kinect and the mobile robot consists of a robotic base, Scout, and a robotic arm, Katana.\\
+The autonomous system used for this project consisted of a customized \textit{Nomadic Scout} differential drive platform (\emph{Scout}), a  \textit{Katana 300 6M180} robotic arm (\textit{Katana}) and a \textit{RGB-D Kinect} camera.
+
+The Software was all built on top of the Robot \textit{Operating System platform} (ROS) \cite{ROS}, the \textit{Hydro} and \textit{Indigo} versions, and all code was developed in Python 2.7.
+
+For the development of the Dataset and Classifier the Scikit-learn \cite{Scikit-Learn} and the Pandas \cite{Pandas} Python libraries were used.	
 
 \subsection{Kinect}
-Along with the Kinect camera, a ROS package called \textit{openni-tracker} was used to detect the human body. This package gives as output the position of several points of the user's body, such as: head, neck, shoulders, elbows, hands, torso, hips, knees and feet.
+The \textit{Kinect} was used by the system to collect information about the world, in this case to track the position and movements of the user. 
+
+To extract data from the Kinect we used the OpenNI software which was then connected to the  \textit{openni-tracker} ROS package. This package gives tracks a person and outputs the pose of several joints of the user's body, see Figure \ref{fig:skeleton_tracker}.
+
 \begin{figure}[!h]
 	\centering
 		\includegraphics[scale=0.5]{./Skeleton_tracker}
-	\caption{Points given by the \textit{openni-tracker}}
-\end{figure}\\
+	\caption{Points given by the \textit{openni-tracker}}\label{fig:skeleton_tracker}
+\end{figure}
 
 \subsection{Katana}
 \label{Material: Katana}
-To operate the Katana we used the already existent ROS package, \textit{Katana Native Interface}. Using this driver it is possible to power off the motors, allowing manual set of the robot positions and a reading of the maximum and minimum values for the different joints. After concluding this step it is possible to send commands to the Katana with the value for each joint position as well as the time to execute the movement. Sending a combination of these commands, it is possible for the Katana to reproduce simple human-like gestures.\\
+The \textit{Katana} arm is the main interaction point between the system and the human, given that the robotic arm has a lot of movement possibilities and was used to replicate human-like behaviors.
+To operate the Katana we used the ROS package, \textit{katana\_driver}.  Using this driver it is possible to power off the motors, allowing manual set of the robot positions and a reading of the maximum and minimum values for the different joints. After concluding this step it is possible to send commands to the Katana with the value for each joint position as well as the time to execute the movement. Sending a combination of these commands, it is possible for the Katana to reproduce simple human-like gestures.\\
 
 \subsection{Scout}
-Having in mind that the Scout is already an older robot it is difficult to find a ROS package which allows the inclusion of Scout in it, therefore we chose to program our own controller using the Scout driver. The driver allows us to read the odometry of the robot. In addition to the odometry, knowing that Scout receives as a command a distance to a certain place, the programmed controller is based on the comparison of the odometry with the distance that the robot was told to move. Although we only implemented this controller for one dimension movements, because there were some troubles with the odometry measurements associated with the needed rotation for the two dimensional movement. Considering that the main goal of the project is not to have a perfectly mobile robot, we decided to leave this point for future refinement of the system.\\
+The \textit{Scout} was controlled to allow the autonomous system to move in a single dimension to allow the system to approach and move away from the user.
+The first layer connecting directly to the Scout robot consisted of the scout\_driver and scout\_odom packages which controlled the velocity of each wheel and the odometry readings.  
+Due to difficulties with connecting the Scout with ROS \textit{move\_base} package we decided to program our own controller over the Scout driver. 
+
+Our controler received the commands in ($\delta_x,\delta_y,\delta_\theta$) where each coordinate corresponds to the difference between the goal and the current robot's location. The controller is based on the comparison of the odometry with the distance to the goal, when the robot is within a certain threshold of the goal it stops. We only implemented this controller for one dimension movements, because there were some troubles with the odometry measurements associated with the needed rotation for the two dimensional movement and this didn't restrict too much our setup. Considering that the main goal of the project is focused on the Human robot interaction and not on the robot motion, we decided to leave this point for future refinement of the system.\\
+
+	
+
+
+%For this project we worked with the robotic arm Katana, the mobile robotic base Scout and the Kinect camera. These 3 components build our system, which we decided to call \textit{Adele}.
+
+%To achieve this goal there are some issues that need to be solved at first, such as: learning how to work with the software ROS (Robot Operating System), making the robot mobile, collecting data from the camera, interpret this data, create an algorithm to make a more human-like response from the robotic system and finally integrate all these parts of the project.
+
+%It is essential to have a good understanding of the ROS software, because in is the foundation of the project. ROS allows to use packages for the robots and camera, as well as creates an interface that facilitates the communication between all the system parts.
+
+%Considering the second point mentioned - making the robot mobile - there is the need to use already created ROS packages that give us drivers both for Scout as for Katana. Furthermore the movements that both robots do had to be programmed and controlled.
+
+%To collect data from the camera a ROS package was used, that extracts the position of diverse body parts of the human body. With that information a program was designed to interpret the movements, based on the different positions that were being read.
+
+%The algorithm used for the prediction part is based on machine learning knowledge. A dataset was created to train \textit{Adele}, where all the gestures and movements of the human user are included, as well as the action that the system should take when such movement is acknowledge. To improve the prediction step............................
+
+
+
+%The autonomous system used for this project consisted of a customized \textit{Nomadic Scout} differential drive platform (\emph{Scout}), a  \textit{Katana 300 6M180} robotic arm (\textit{Katana}) and a \textit{Kinect} camera.
+%The \textit{Kinect} was used by the system to collect information about the world, in this case to track the position and movements of the user. From the raw camera information an algorithm was implemented to track the user and then detect several gestures. 
+%The Scout was controlled to allow the autonomous system to move in a single dimension to allow the system to approach and move away from the user.
+%The \textit{Katana} arm is the main interaction point between the system and the human, given that the robotic arm has a lot of movement possibilities and was used to replicate human-like behaviors. 
