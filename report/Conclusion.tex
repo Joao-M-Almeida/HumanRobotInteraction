@@ -1,14 +1,20 @@
 \section{Conclusion}
-After the experimental results there are clearly some pros \& cons about the implemented solution, such as:
+For testing our system the user must be aware of the movements that Adele is able to recognize. Besides, one must pay attention to the fact that although the processing part of the system is fast, Adele's actions take some time until they are finished. This detail makes the whole interaction feel a bit unnatural.
 
+After many experiments we reach to the conclusion that our implemented system works, because there are many cases where the interaction develops how it is supposed to be. However this didn't happen for every experiment. There are some cases where Adele doesn't recognize the correct movement and therefore there is an incorrect reaction, or Adele just doesn't recognizes a movement at all and in this case the probability threshold is never reached, which makes Adele stay at the default state, (NOP).
 
-Pros:
+During the experiments where Adele works as it should, it is difficult to recognize the \textit{prediction} element in the solution. Sometimes the Adele's response time makes it look like it was predicted reaction, but in other cases it seems that Adele's reaction could be explicitly programmed as well.
+
+After the experimental results there are clearly some pros and cons about the implemented solution:
+
+\centerline{Pros}
 \begin{itemize}
 \item Fast (small processing needed)
 \item Scalable - with some improvements it should be able to identify gestures not explicitly programmed
 \item Allows the incorporation of both explicit and implicit knowledge (which is impossible with an hand programmed solution)
 \end{itemize}
-Cons:
+
+\centerline{Cons}
 \begin{itemize}
 \item There must exist a training set
 \item Hard to evaluate if the robot action is predicted or just a reaction to an user's action
@@ -16,7 +22,8 @@ Cons:
 \item The features used in this project may not be the best ones
 \end{itemize}
 
-As in all engineering projects, there is always room for improvements. In this case, the suggested improvements are the following:
+\color{red}To mitigate the disadvantages above mentioned and to improve the general operation of Adele...
+\color{black}
 \begin{itemize}
 \item Train Classifier with finer features (for instance, calculate angles between all joints given by the skeleton tracker, or even use all the raw data from the tracker)
 \item Train Classifier with features with a constant time interval between samples
