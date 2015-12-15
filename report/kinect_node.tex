@@ -1,0 +1,38 @@
+\subsection{Kinect Node: Gestures}
+
+The \textit{Sensor/Kinect node} is responsible for processing the raw information of the Kinect and sending structured and useful data to the \textit{decision node}. This is done through the OpenNI software and three ROS nodes, two of them implemented by us.  
+
+From the raw output of the OpenNI software the ROS package \textit{openni\_tracker} outputs the pose of various joints of the user. This data was then fed into our \textit{kinect\_skeleton\_tracker} node. This node obtained a stable representation of the points tracked of the user through filtering the data with a median filter of 5 samples. It also calculated the velocity and position of the center of mass of the user in regards to the camera, through the average of the measurements of the six central points (neck, torso, shoulders and hips). 
+
+From points representing joints it's straightforward to calculate the vectors that represent parts of the body like arm and forearm. Relations between them, such as angles or distances perform a good way to detect movements independent from the camera's referential.
+From these angles and distances we can calculate both the values and their derivatives. Extracting these features from the image allowed the detection of both small movements or more complete gestures.
+
+We implemented the detection of gestures of different complexity. The more simple "micro-gestures":
+
+\begin{itemize}
+\item forearm opening;
+\item forearm closing;
+\item arm moving up;
+\item arm moving down;
+\item arm stopped;
+\item hand above elbow;
+\item hand under elbow;
+\item elbow behind body;
+\item elbow in front of body;
+\end{itemize}
+
+And the compound gestures:
+\begin{itemize}
+\item waving;
+\item calling;
+\item handing;
+\end{itemize}
+
+ 
+Not only the posti of the joints positions but also features as velocities and accelerations are detected. This way small movements are recognize as opening and closing the forearm or the arm moving up as well as moving down. 
+
+The small movements include the variation position of the hand regarding the elbow, the position of the elbow regarding the torso, the amplitude between forearm and arm and the amplitude of the arm regarding the torso. More than one gesture can be built using the same small movements.
+
+In order to help the system recognizing more accurately the gestures we included in this work the detection of waving, calling and handing gestures using the movements previously described.
+
+%Furthermore, it is also included detection of the position of the person in the world frame and the person's velocity. As for simplifying purposes it was decided to only work in one spatial dimension, the position is detected by computing the distance between the person and the kinect camera based on the mean of the points given by the hips, neck and torso. 
