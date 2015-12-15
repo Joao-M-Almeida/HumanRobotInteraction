@@ -1,26 +1,33 @@
+\subsection{Decision Node: the Probabilistic Model}
+The Decision Node is the central block of the implemented system and the main focus of this project. The role of the Decision Node is to interpret the information coming from the Kinect Node and decide which command should be sent to the Action Node.
 
+The decision process we implemented is based on a machine learning approach. Based on the assumptions made in the Introduction we chose a system that would learn the most common sequences of gestures of a user and their appropriate response by the robot. 
 
-\subsection{Decision Node: Probabilistic Model}
-As it can be seen in figure \ref{fig:adele_structure} the Decision Node is the central block of this project and where its main focus should be. The role of the Decision Node in this project is to interpret the information coming from the Kinect Node and based on the results of the Training Set make a decision on the command that should be sent to the Action Node.
+For this approach we needed a way to generate labeled data for our classifier, so what we implemented was getting the outputs of the kinect node and saving them to a dataset with the labels we gave by hand.
 
-The Decision Node works together with a Training Set. This Training Set is a set of small videos where one user stands in front of the camera and behaves like if he were in a normal human-human interaction. Some examples of interactions are the following:
+The samples taken from the kinect were based on interactions we defined, and that represented what we thought were normal human attempts to interact with a robot. Some examples of interactions are the following:
+
 \begin{itemize}
-\item User moves around; waves; goes towards the camera; hands an object
-\item User waves; calls; gives an high-five
-\item User calls; goes away
+\item User moves around; waves; goes towards the camera; hands an object.
+\item User waves; calls; gives an high-five.
+\item User calls; goes away.
 \end{itemize}
-For saving the information in the Training Set, the following structure is used:\\
 
+Each dataset sample represented the last five gestures by the user and corresponded to the output of the \textit{feature\_publisher} node. The structure of each sample is the following:
+
+\vspace*{4pt}
 $\big[Distance, [Gesture, Timestamp, Velocity_x]_1,...$\\$
 [Gesture, Timestamp, Velocity_x]_5\big]$
+\vspace*{4pt}
 
-To every structure arriving the Training Set, a label is given. This label represents the action that Adele should take as a response to that particular human behaviour.
+To every structure arriving the Training Set, a label is given. This label represents the action that Adele should take as a response to that particular human behavior.
 
-To explain the idea behind this labelling let's use the waving gesture as an example. The moment immediately before the user starts waving, the information coming from the Kinect is already labelled as a "Waving", so that Adele knows that when the user is at that particular distance and moves his arm at that particular velocity and with that amplitude of movement, he is waving at her and she must react properly (waving back). Ideally the features read by the Kinect node are sufficient to distinguish the "waving" from any other gesture and therefore Adele starts reacting before she sees the complete movement.
+To explain the idea behind this labeling let's use the waving gesture as an example. The moment immediately before the user starts waving, the information coming from the Kinect is already labeled as a "Waving", so that Adele knows that when the user is at that particular distance and moves his arm at that particular velocity and with that amplitude of movement, he is waving at her and she must react properly (waving back). Ideally the features read by the Kinect node are sufficient to distinguish the "waving" from any other gesture and therefore Adele starts reacting before she sees the complete movement.
 
 As mentioned before, the labels that were given, depend only on the person's movement/gesture and represent Adele's reaction. Table \color{red}\ref{tab:expected_response} \color{black} shows the dependencies between both aspects.
 \begin{table}[!h]
 \centering
+\caption{Expected response from Adele}
 \label{tab:expected_response}
 \begin{tabular}{|c|c|}
 \hline
@@ -31,9 +38,8 @@ Calling                          & Go meet user                         \\
 Go away                          & Return to home                       \\
 High-Five                        & Low-Five                             \\
 Low-Five                         & High-Five                            \\
-Random                           & NOP                                  \\ \hline
+Other	                           & NOP                                  \\ \hline
 \end{tabular}
-\caption{Expected response from Adele}
 \end{table}
 
 The next step in the implementation of the Decision Node concerns Adele's learning. The Training Set was divided into two parts, one containing 80\% and the other with the remaining 20\%, the latter being called the validation set.
@@ -52,6 +58,8 @@ The graph is represented as table showing the probability of doing a particular 
 
 \begin{table}[]
 \centering
+\caption{My caption}
+\label{my-label}
 \begin{tabular}{cccccccc}
 Previous|Next                        & \textbf{NOP} & \textbf{Wave} & \textbf{H5} & \textbf{L5} & \textbf{Go} & \textbf{Grab} & \textbf{Return} \\ \cline{2-8} 
 \multicolumn{1}{c|}{\textbf{NOP}}    & 1/7          & 1/7           & 1/7         & 1/14        & 1/7         & 3/14          & 1/7             \\
@@ -62,6 +70,5 @@ Previous|Next                        & \textbf{NOP} & \textbf{Wave} & \textbf{H5
 \multicolumn{1}{c|}{\textbf{Grab}}   & 2/7          & 0             & 1/7         & 1/7         & 0           & 0             & 3/7             \\
 \multicolumn{1}{c|}{\textbf{Return}} & 1/6          & 1/6           & 1/6         & 1/6         & 1/6         & 1/6           & 0              
 \end{tabular}
-\caption{My caption}
-\label{my-label}
+
 \end{table}

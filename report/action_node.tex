@@ -1,8 +1,8 @@
 \subsection{Action Node: Katana \& Scout}
 
-The action node in reality corresponds to two ROS nodes working in parallel,the katana\_controller and the scout\_controller, both subscribing to the \textbackslash commands topic published by the decision node and processing that information into low level orders to the robots.
+The action node in reality corresponds to two ROS nodes working in parallel, the katana\_controller and the scout\_controller, both subscribing to the \textbackslash commands topic published by the decision node and processing that information into low level orders to the robots.
 
-Both these nodes after completing a command from the Decision node send a "Done" message indicating they are ready for a new command
+Both these nodes after completing a command from the Decision node send a "Done" message indicating they are ready for a new command.
 
 \subsubsection{Katana}
 
@@ -39,7 +39,7 @@ Maximum time: \\
 $\left[5, 1.3, 1.3, 1.3, 5\right]$
 \end{center}
 
-\begin{table}[!h]
+\begin{table}[!ht]
 \centering
 \begin{tabular}{lc}
 Position 1: & {[}-1.85, 1.57, 0.175, -0.35, -1.57, 0.175, 0.175{]} \\
@@ -65,7 +65,7 @@ As it can be seen in figure \ref{fig:scout_axis} our robot has two degrees of fr
 
 The implemented controller receives as an input only the distance in \textit{x} to the goal. Ideally the input would be the final position of the robot in the world map, we leave this as a possible improvement as it would the robot to be tracked by the Kinect Node.
 
-\begin{figure}[!h]
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=0.5\columnwidth]{./ScoutAxis.png}
     \caption{Scout Axis}
@@ -74,7 +74,7 @@ The implemented controller receives as an input only the distance in \textit{x} 
 
 The control loop that we implemented looks as shown in figure \ref{fig:scout_loop}.
 
-\begin{figure}[!h]
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=\columnwidth]{./ControlLoopScout.png}
     \caption{Scout's Control Loop}

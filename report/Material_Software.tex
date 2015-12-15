@@ -17,20 +17,17 @@ To extract data from the Kinect we used the OpenNI software which was then conne
 	\caption{Points given by the \textit{openni-tracker}}\label{fig:skeleton_tracker}
 \end{figure}
 
-\subsection{Katana}
-\label{Material: Katana}
+\subsection{Katana}\label{Material: Katana}
 The \textit{Katana} arm is the main interaction point between the system and the human, given that the robotic arm has a lot of movement possibilities and was used to replicate human-like behaviors.
-To operate the Katana we used the ROS package, \textit{katana\_driver}.  Using this driver it is possible to power off the motors, allowing manual set of the robot positions and a reading of the maximum and minimum values for the different joints. After concluding this step it is possible to send commands to the Katana with the value for each joint position as well as the time to execute the movement. Sending a combination of these commands, it is possible for the Katana to reproduce simple human-like gestures.\\
+
+To operate the Katana we used the ROS package, \textit{katana\_driver}.  Using this driver it is possible to power off the motors, allowing manual set of the robot positions and a reading of the maximum and minimum values for the different joints. After concluding this step it is possible to send commands to the Katana with the value for each joint position as well as the time to execute the movement. Sending a combination of these commands, it is possible for the Katana to reproduce simple human-like gestures.
 
 \subsection{Scout}
 The \textit{Scout} was controlled to allow the autonomous system to move in a single dimension to allow the system to approach and move away from the user.
 The first layer connecting directly to the Scout robot consisted of the scout\_driver and scout\_odom packages which controlled the velocity of each wheel and the odometry readings.  
 Due to difficulties with connecting the Scout with ROS \textit{move\_base} package we decided to program our own controller over the Scout driver. 
 
-Our controler received the commands in ($\delta_x,\delta_y,\delta_\theta$) where each coordinate corresponds to the difference between the goal and the current robot's location. The controller is based on the comparison of the odometry with the distance to the goal, when the robot is within a certain threshold of the goal it stops. We only implemented this controller for one dimension movements, because there were some troubles with the odometry measurements associated with the needed rotation for the two dimensional movement and this didn't restrict too much our setup. Considering that the main goal of the project is focused on the Human robot interaction and not on the robot motion, we decided to leave this point for future refinement of the system.\\
-
-	
-
+Our controler received the commands in ($\delta_x, \delta_y, \delta_\theta$) where each coordinate corresponds to the difference between the goal and the current robot's location. The controller is based on the comparison of the odometry with the distance to the goal, when the robot is within a certain threshold of the goal it stops. We only implemented this controller for one dimension movements, because there were some troubles with the odometry measurements associated with the needed rotation for the two dimensional movement and this didn't restrict too much our setup. Considering that the main goal of the project is focused on the Human robot interaction and not on the robot motion, we decided to leave this point for future refinement of the system.
 
 %For this project we worked with the robotic arm Katana, the mobile robotic base Scout and the Kinect camera. These 3 components build our system, which we decided to call \textit{Adele}.
 
