@@ -88,3 +88,4 @@ CATKIN_IGNORE
 *.vrb
 *.xdy
 *.tdo
+*.tex.bak
