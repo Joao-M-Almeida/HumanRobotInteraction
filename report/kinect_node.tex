@@ -28,11 +28,6 @@ And the compound gestures:
 \item handing;
 \end{itemize}
 
- 
-Not only the posti of the joints positions but also features as velocities and accelerations are detected. This way small movements are recognize as opening and closing the forearm or the arm moving up as well as moving down. 
+The gestures detected and the information about the position and velocity of the user are then fed to another ROS node implemented by us, the \textit{feature\_publisher}.
 
-The small movements include the variation position of the hand regarding the elbow, the position of the elbow regarding the torso, the amplitude between forearm and arm and the amplitude of the arm regarding the torso. More than one gesture can be built using the same small movements.
-
-In order to help the system recognizing more accurately the gestures we included in this work the detection of waving, calling and handing gestures using the movements previously described.
-
-%Furthermore, it is also included detection of the position of the person in the world frame and the person's velocity. As for simplifying purposes it was decided to only work in one spatial dimension, the position is detected by computing the distance between the person and the kinect camera based on the mean of the points given by the hips, neck and torso. 
+This node compiles the information about the last 5 gestures of the user and then publishes it to a ROS topic. This topic is then read by either the decision node or the dataset builder script, this process will be explained further in the report.  

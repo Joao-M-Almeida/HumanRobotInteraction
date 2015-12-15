@@ -40,9 +40,15 @@ The next step in the implementation of the Decision Node concerns Adele's learni
 
 Regarding how the validation is done, there were some different machine learning algorithms that were tested, such as: SVM, Linear SVM, Logistic Regression, 3 Nearest Neighbours, AdaBoost and Stochastic Gradient Descent. The algorithm that presented the best performance using 10-fold cross-validation was the SVM and therefore that was the chosen one.
 
-\color{red}
-.......preciso de uma ajudinha para perceber exactamente o hip hop dos acrescimos de probabilidades e do threshold.....
-\color{black}
+There is a probability associated with each action performed by Adele. Based on the user movement she captures using the kinect, she labels each set of 5 gestures detected according with the program previously trained. Each label represents an action to be performed by Adele. To filter the most probable action, based on the user initial movements of a gesture, we set a threshold from which we consider to have a degree of certainty that the action which the probability beats the threshold is the one to be performed. 
+
+Probabilities for each action are incremented based on the number of times Adele labels a set of 5 gestures recognized with that desired action. Furthermore, the intiation of these probabilities is not random. 
+
+Human knowledge was used to help the system to predict which gesture is more probable to be done after a previous gesture. 
+
+Bearing that in mind we designed a probability graph with the probabilities for the sequence of actions we found more natural Adele to perform given previous actions. These probabilities are assigned to each possible action after the degree of certainty about the previous one be enough to beat the threshold. In the beginnig we assume the system is performing the NOP action.
+
+The graph is represented as table showing the probability of doing a particular action after other action. This information is shown in table 3.
 
 \begin{table}[]
 \centering
