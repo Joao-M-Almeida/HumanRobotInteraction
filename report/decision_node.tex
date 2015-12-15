@@ -1,7 +1,9 @@
 \subsection{Decision Node: the Probabilistic Model}
 The Decision Node is the central block of the implemented system and the main focus of this project. The role of the Decision Node is to interpret the information coming from the Kinect Node and decide which command should be sent to the Action Node.
 
-The decision process we implemented is based on a machine learning approach. Based on the assumptions made in the Introduction we chose a system that would learn the most common sequences of gestures of a user and their appropriate response by the robot. 
+The decision process we implemented is based on a machine learning approach. Based on the assumptions made in the Introduction we chose a system that would learn the most common sequences of gestures of a user and their appropriate response by the robot. Based on this knowledge the decision node would then for each incoming sample data from the Kinect predict  
+
+
 
 For this approach we needed a way to generate labeled data for our classifier, so what we implemented was getting the outputs of the kinect node and saving them to a dataset with the labels we gave by hand.
 
@@ -46,17 +48,22 @@ Other	                           & NOP                                  \\ \hlin
 
 The next step in the implementation of the Decision Node concerns which machine learning algorithm to use. 
 
-Regarding how the validation is done, there were some different machine learning algorithms that were tested, such as: SVM, Linear SVM, Logistic Regression, 3 Nearest Neighbours, AdaBoost and Stochastic Gradient Descent. The algorithm that presented the best performance using 10-fold cross-validation was the SVM and therefore that was the chosen one.
+We used the Scikit-learn Python library \cite{Scikit-Learn} to test different algorithms. Using our dataset we did a 10-fold Cross validation on different algorihtms: Suport Vector Machines (SVM), Linear SVM, Logistic Regression, 3 Nearest Neighbours, AdaBoost and Stochastic Gradient Descent. The algorithm that presented the best performance (around 45\% accuracy) was the SVM and therefore that was the chosen one. After choosing the algorithm we fine tuned the parameters to improve the results. We added costs to each class inversely proportional to its frequency in the dataset. We set the classifier to output not only his classification for each sample but also the probabilities for each class.
 
-There is a probability associated with each action performed by Adele. Based on the user movement she captures using the kinect, she labels each set of 5 gestures detected according with the program previously trained. Each label represents an action to be performed by Adele. To filter the most probable action, based on the user initial movements of a gesture, we set a threshold from which we consider to have a degree of certainty that the action which the probability beats the threshold is the one to be performed. 
+With the output of the classifier we chose not to automatically take the action it classified. High number of samples would lead to a lot of noise. To filter some of this noise we implemented a simple system where at each new sample the probability of taking an action would be updated accordingly to the classifier output. When it surpassed a threshold that action would be sent to the Action node as a command.
 
-Probabilities for each action are incremented based on the number of times Adele labels a set of 5 gestures recognized with that desired action. Furthermore, the intiation of these probabilities is not random. 
+At system startup each possible action is initialized with a default probabability equal to $1/N$ where $N$ is the number of possible actions.  
+Then at each new classification the probabilities would be incremented by $I*P(a_j)$ where I is a constant increment value ($0.3$ in our implementation) and $P(a_j)$ is the probability given by the classifier for the action j. 
+After each update all probabilities are normalized to sum to one.
+When one of the probabilities is larger than our threshold (set at $0.5$ in this case) the action is sent as a command and the probabilities are reinitialized. This threshold represents a certain degree of certainty that this action is the correct one to take.
 
-Human knowledge was used to help the system to predict which gesture is more probable to be done after a previous gesture. 
+During the execution of each command there are no issues of new commands by the decision node.
 
-Bearing that in mind we designed a probability graph with the probabilities for the sequence of actions we found more natural Adele to perform given previous actions. These probabilities are assigned to each possible action after the degree of certainty about the previous one be enough to beat the threshold. In the beginnig we assume the system is performing the NOP action.
+To make the system more robust and faster to reach the correct decisions we integrated our knowledge in the process. This was used to help the system to predict which gesture is more probable to be done after a previous gesture. 
 
-The graph is represented as table showing the probability of doing a particular action after other action. This information is shown in table \ref{transition_matrix}.
+The idea was to create something similar to a simple markov chain, where each state is the last done action and the transition 
+probability is the starting probability for the next state. 
+The chain is represented as transition matrix showing the starting probability of a particular action after a specific action. This information is shown in table \ref{transition_matrix}. 
 
 \begin{table*}[t]
 \centering
@@ -73,15 +80,6 @@ The graph is represented as table showing the probability of doing a particular 
 \textbf{Grab} & 2/7 & 0 & 1/7 & 1/7 & 0 & 0 & 3/7 \\ \cline{1-1}
 \textbf{Return} & 1/6 & 1/6 & 1/6 & 1/6 & 1/6 & 1/6 & 0 \\ \hline
 \end{tabular}
-%\begin{tabular}{cccccccc}
-%Previous|Next                        & \textbf{NOP} & \textbf{Wave} & \textbf{H5} & \textbf{L5} & \textbf{Go} & \textbf{Grab} & \textbf{Return} \\ \cline{2-8} 
-%\multicolumn{1}{c|}{\textbf{NOP}}    & 1/7          & 1/7           & 1/7         & 1/14        & 1/7         & 3/14          & 1/7             \\
-%\multicolumn{1}{c|}{\textbf{Wave}}   & 1/7          & 0             & 0           & 1/7         & 3/7         & 2/7           & 0               \\
-%\multicolumn{1}{c|}{\textbf{H5}}     & 1/6          & 1/6           & 0           & 1/6         & 1/6         & 1/6           & 1/6             \\
-%\multicolumn{1}{c|}{\textbf{L5}}     & 2/7          & 0             & 0           & 0           & 0           & 2/7           & 3/7             \\
-%\multicolumn{1}{c|}{\textbf{Go}}     & 1/14         & 0             & 1/7         & 1/7         & 0           & 3/7           & 3/14            \\
-%\multicolumn{1}{c|}{\textbf{Grab}}   & 2/7          & 0             & 1/7         & 1/7         & 0           & 0             & 3/7             \\
-%\multicolumn{1}{c|}{\textbf{Return}} & 1/6          & 1/6           & 1/6         & 1/6         & 1/6         & 1/6           & 0              
-%\end{tabular}
-
 \end{table*}
+
+What we implemented in practice is that after an action the probabilities are initialize as the values of one of the rows of this matrix.
