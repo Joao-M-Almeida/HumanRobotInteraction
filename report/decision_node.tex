@@ -16,15 +16,17 @@ The samples taken from the kinect were based on interactions we defined, and tha
 Each dataset sample represented the last five gestures by the user and corresponded to the output of the \textit{feature\_publisher} node. The structure of each sample is the following:
 
 \vspace*{4pt}
-$\big[Distance, [Gesture, Timestamp, Velocity_x]_1,...$\\$
-[Gesture, Timestamp, Velocity_x]_5\big]$
+$\Big[Distance, [Gesture, Timestamp, Velocity_x]_1,...$
+
+$[Gesture, Timestamp, Velocity_x]_5\Big]$
 \vspace*{4pt}
 
-To every structure arriving the Training Set, a label is given. This label represents the action that Adele should take as a response to that particular human behavior.
+Each sample record received a label, this represents the action that Adele should take as a response to that particular human behavior.
 
-To explain the idea behind this labeling let's use the waving gesture as an example. The moment immediately before the user starts waving, the information coming from the Kinect is already labeled as a "Waving", so that Adele knows that when the user is at that particular distance and moves his arm at that particular velocity and with that amplitude of movement, he is waving at her and she must react properly (waving back). Ideally the features read by the Kinect node are sufficient to distinguish the "waving" from any other gesture and therefore Adele starts reacting before she sees the complete movement.
+To explain the idea behind this labeling let's use the waving gesture as an example. The moment immediately before the user starts waving, the information coming from the Kinect is already labeled as a "Waving", so that Adele knows that when the user is at that particular distance and moves his arm at that particular velocity and with that amplitude of movement, he is going to wave at her and she must react properly (waving back in this case). Ideally the features read by the Kinect node are sufficient to distinguish the "waving" from any other gesture and therefore Adele starts reacting before she sees the complete movement. One advantage of this approach is that the classifier will be able to use information that wouldn't be possible to use if explicitly programmed.	
 
-As mentioned before, the labels that were given, depend only on the person's movement/gesture and represent Adele's reaction. Table \color{red}\ref{tab:expected_response} \color{black} shows the dependencies between both aspects.
+We colleted data for various different interactions of the user with the robot, this data was labeled according to what we defined were the correct responses. Table \ref{tab:expected_response} shows the expected response to each of the users movements. The label NOP (No Operation) was used to classify all movements that didn't require a response.
+
 \begin{table}[!h]
 \centering
 \caption{Expected response from Adele}
@@ -35,14 +37,14 @@ As mentioned before, the labels that were given, depend only on the person's mov
 Waving                           & Wave                                 \\
 Handing an object                & Grab                            		\\
 Calling                          & Go meet user                         \\
-Go away                          & Return to home                       \\
+Go away                          & Return                       \\
 High-Five                        & Low-Five                             \\
 Low-Five                         & High-Five                            \\
 Other	                           & NOP                                  \\ \hline
 \end{tabular}
 \end{table}
 
-The next step in the implementation of the Decision Node concerns Adele's learning. The Training Set was divided into two parts, one containing 80\% and the other with the remaining 20\%, the latter being called the validation set.
+The next step in the implementation of the Decision Node concerns which machine learning algorithm to use. 
 
 Regarding how the validation is done, there were some different machine learning algorithms that were tested, such as: SVM, Linear SVM, Logistic Regression, 3 Nearest Neighbours, AdaBoost and Stochastic Gradient Descent. The algorithm that presented the best performance using 10-fold cross-validation was the SVM and therefore that was the chosen one.
 
@@ -54,21 +56,32 @@ Human knowledge was used to help the system to predict which gesture is more pro
 
 Bearing that in mind we designed a probability graph with the probabilities for the sequence of actions we found more natural Adele to perform given previous actions. These probabilities are assigned to each possible action after the degree of certainty about the previous one be enough to beat the threshold. In the beginnig we assume the system is performing the NOP action.
 
-The graph is represented as table showing the probability of doing a particular action after other action. This information is shown in table 3.
+The graph is represented as table showing the probability of doing a particular action after other action. This information is shown in table \ref{transition_matrix}.
 
-\begin{table}[]
+\begin{table*}[t]
 \centering
-\caption{My caption}
-\label{my-label}
-\begin{tabular}{cccccccc}
-Previous|Next                        & \textbf{NOP} & \textbf{Wave} & \textbf{H5} & \textbf{L5} & \textbf{Go} & \textbf{Grab} & \textbf{Return} \\ \cline{2-8} 
-\multicolumn{1}{c|}{\textbf{NOP}}    & 1/7          & 1/7           & 1/7         & 1/14        & 1/7         & 3/14          & 1/7             \\
-\multicolumn{1}{c|}{\textbf{Wave}}   & 1/7          & 0             & 0           & 1/7         & 3/7         & 2/7           & 0               \\
-\multicolumn{1}{c|}{\textbf{H5}}     & 1/6          & 1/6           & 0           & 1/6         & 1/6         & 1/6           & 1/6             \\
-\multicolumn{1}{c|}{\textbf{L5}}     & 2/7          & 0             & 0           & 0           & 0           & 2/7           & 3/7             \\
-\multicolumn{1}{c|}{\textbf{Go}}     & 1/14         & 0             & 1/7         & 1/7         & 0           & 3/7           & 3/14            \\
-\multicolumn{1}{c|}{\textbf{Grab}}   & 2/7          & 0             & 1/7         & 1/7         & 0           & 0             & 3/7             \\
-\multicolumn{1}{c|}{\textbf{Return}} & 1/6          & 1/6           & 1/6         & 1/6         & 1/6         & 1/6           & 0              
+\caption{Transition Matrix}
+\label{transition_matrix}
+\begin{tabular}{|l|ccccccc|}
+\hline
+ & \multicolumn{1}{c|}{\textbf{NOP}} & \multicolumn{1}{c|}{\textbf{Wave}} & \multicolumn{1}{c|}{\textbf{High-5}} & \multicolumn{1}{c|}{\textbf{Low-5}} & \multicolumn{1}{c|}{\textbf{Go}} & \multicolumn{1}{c|}{\textbf{Grab}} & \textbf{Return} \\ \hline
+\textbf{NOP} & 1/7 & 1/7 & 1/7 & 1/14 & 1/7 & 3/14 & 1/4 \\ \cline{1-1}
+\textbf{Wave} & 1/7 & 0 & 0 & 1/7 & 3/7 & 2/7 & 0 \\ \cline{1-1}
+\textbf{High-5} & 1/6 & 1/6 & 0 & 1/6 & 1/6 & 1/6 & 1/6 \\ \cline{1-1}
+\textbf{Low-5} & 2/7 & 0 & 0 & 0 & 0 & 2/7 & 3/7 \\ \cline{1-1}
+\textbf{Go} & 1/14 & 0 & 1/7 & 1/7 & 0 & 3/7 & 3/14 \\ \cline{1-1}
+\textbf{Grab} & 2/7 & 0 & 1/7 & 1/7 & 0 & 0 & 3/7 \\ \cline{1-1}
+\textbf{Return} & 1/6 & 1/6 & 1/6 & 1/6 & 1/6 & 1/6 & 0 \\ \hline
 \end{tabular}
+%\begin{tabular}{cccccccc}
+%Previous|Next                        & \textbf{NOP} & \textbf{Wave} & \textbf{H5} & \textbf{L5} & \textbf{Go} & \textbf{Grab} & \textbf{Return} \\ \cline{2-8} 
+%\multicolumn{1}{c|}{\textbf{NOP}}    & 1/7          & 1/7           & 1/7         & 1/14        & 1/7         & 3/14          & 1/7             \\
+%\multicolumn{1}{c|}{\textbf{Wave}}   & 1/7          & 0             & 0           & 1/7         & 3/7         & 2/7           & 0               \\
+%\multicolumn{1}{c|}{\textbf{H5}}     & 1/6          & 1/6           & 0           & 1/6         & 1/6         & 1/6           & 1/6             \\
+%\multicolumn{1}{c|}{\textbf{L5}}     & 2/7          & 0             & 0           & 0           & 0           & 2/7           & 3/7             \\
+%\multicolumn{1}{c|}{\textbf{Go}}     & 1/14         & 0             & 1/7         & 1/7         & 0           & 3/7           & 3/14            \\
+%\multicolumn{1}{c|}{\textbf{Grab}}   & 2/7          & 0             & 1/7         & 1/7         & 0           & 0             & 3/7             \\
+%\multicolumn{1}{c|}{\textbf{Return}} & 1/6          & 1/6           & 1/6         & 1/6         & 1/6         & 1/6           & 0              
+%\end{tabular}
 
-\end{table}
+\end{table*}
