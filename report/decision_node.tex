@@ -1,7 +1,7 @@
 \subsection{Decision Node: the Probabilistic Model}
 The Decision Node is the central block of the implemented system and the main focus of this project. The role of the Decision Node is to interpret the information coming from the Kinect Node and decide which command should be sent to the Action Node.
 
-The decision process we implemented is based on a machine learning approach. Based on the assumptions made in the Introduction we chose a system that would learn the most common sequences of gestures of a user and their appropriate response by the robot. Based on this knowledge the decision node would then for each incoming sample data from the Kinect predict  
+The decision process we implemented is based on a machine learning approach. Based on the assumptions made in the Introduction we chose a system that would learn the most common sequences of gestures of a user and their appropriate response by the robot. Based on this knowledge the decision node would then for each incoming sample data from the Kinect predict
 
 
 
@@ -25,7 +25,7 @@ $[Gesture, Timestamp, Velocity_x]_5\Big]$
 
 Each sample record received a label, this represents the action that Adele should take as a response to that particular human behavior.
 
-To explain the idea behind this labeling let's use the waving gesture as an example. The moment immediately before the user starts waving, the information coming from the Kinect is already labeled as a "Waving", so that Adele knows that when the user is at that particular distance and moves his arm at that particular velocity and with that amplitude of movement, he is going to wave at her and she must react properly (waving back in this case). Ideally the features read by the Kinect node are sufficient to distinguish the "waving" from any other gesture and therefore Adele starts reacting before she sees the complete movement. One advantage of this approach is that the classifier will be able to use information that wouldn't be possible to use if explicitly programmed.	
+To explain the idea behind this labeling let's use the waving gesture as an example. The moment immediately before the user starts waving, the information coming from the Kinect is already labeled as a "Waving", so that Adele knows that when the user is at that particular distance and moves his arm at that particular velocity and with that amplitude of movement, he is going to wave at her and she must react properly (waving back in this case). Ideally the features read by the Kinect node are sufficient to distinguish the "waving" from any other gesture and therefore Adele starts reacting before she sees the complete movement. One advantage of this approach is that the classifier will be able to use information that wouldn't be possible to use if explicitly programmed.
 
 We colleted data for various different interactions of the user with the robot, this data was labeled according to what we defined were the correct responses. Table \ref{tab:expected_response} shows the expected response to each of the users movements. The label NOP (No Operation) was used to classify all movements that didn't require a response.
 
@@ -46,24 +46,26 @@ Other	                           & NOP                                  \\ \hlin
 \end{tabular}
 \end{table}
 
-The next step in the implementation of the Decision Node concerns which machine learning algorithm to use. 
+The next step in the implementation of the Decision Node concerns which machine learning algorithm to use.
 
 We used the Scikit-learn Python library \cite{Scikit-Learn} to test different algorithms. Using our dataset we did a 10-fold Cross validation on different algorihtms: Suport Vector Machines (SVM), Linear SVM, Logistic Regression, 3 Nearest Neighbours, AdaBoost and Stochastic Gradient Descent. The algorithm that presented the best performance (around 45\% accuracy) was the SVM and therefore that was the chosen one. After choosing the algorithm we fine tuned the parameters to improve the results. We added costs to each class inversely proportional to its frequency in the dataset. We set the classifier to output not only his classification for each sample but also the probabilities for each class.
 
+\color{red} PCA not mentioned yet! \color{black}
+
 With the output of the classifier we chose not to automatically take the action it classified. High number of samples would lead to a lot of noise. To filter some of this noise we implemented a simple system where at each new sample the probability of taking an action would be updated accordingly to the classifier output. When it surpassed a threshold that action would be sent to the Action node as a command.
 
-At system startup each possible action is initialized with a default probabability equal to $1/N$ where $N$ is the number of possible actions.  
-Then at each new classification the probabilities would be incremented by $I*P(a_j)$ where I is a constant increment value ($0.3$ in our implementation) and $P(a_j)$ is the probability given by the classifier for the action j. 
+At system startup each possible action is initialized with a default probabability equal to $1/N$ where $N$ is the number of possible actions.
+Then at each new classification the probabilities would be incremented by $I*P(a_j)$ where I is a constant increment value ($0.3$ in our implementation) and $P(a_j)$ is the probability given by the classifier for the action j.
 After each update all probabilities are normalized to sum to one.
 When one of the probabilities is larger than our threshold (set at $0.5$ in this case) the action is sent as a command and the probabilities are reinitialized. This threshold represents a certain degree of certainty that this action is the correct one to take.
 
 During the execution of each command there are no issues of new commands by the decision node.
 
-To make the system more robust and faster to reach the correct decisions we integrated our knowledge in the process. This was used to help the system to predict which gesture is more probable to be done after a previous gesture. 
+To make the system more robust and faster to reach the correct decisions we integrated our knowledge in the process. This was used to help the system to predict which gesture is more probable to be done after a previous gesture.
 
-The idea was to create something similar to a simple markov chain, where each state is the last done action and the transition 
-probability is the starting probability for the next state. 
-The chain is represented as transition matrix showing the starting probability of a particular action after a specific action. This information is shown in table \ref{transition_matrix}. 
+The idea was to create something similar to a simple markov chain, where each state is the last done action and the transition
+probability is the starting probability for the next state.
+The chain is represented as transition matrix showing the starting probability of a particular action after a specific action. This information is shown in table \ref{transition_matrix}.
 
 \begin{table*}[t]
 \centering
