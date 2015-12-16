@@ -1,7 +1,7 @@
 \subsection{Decision Node: the Probabilistic Model}
 The Decision Node is the central block of the implemented system and the main focus of this project. The role of the Decision Node is to interpret the information coming from the Kinect Node and decide which command should be sent to the Action Node.
 
-The decision process we implemented is based on a machine learning approach. Based on the assumptions made in the Introduction we chose a system that would learn the most common sequences of gestures of a user and their appropriate response by the robot. Based on this knowledge the decision node would then for each incoming sample data from the Kinect predict
+The decision process we implemented is based on a machine learning approach. Based on the assumptions made in the Introduction we chose a system that would learn the most common sequences of gestures of a user and their appropriate response by the robot. Based on this knowledge the decision node would then for each incoming sample data from the Kinect predict.
 
 
 \begin{table*}[t]
@@ -43,7 +43,7 @@ Each sample record received a label, this represents the action that Adele shoul
 
 To explain the idea behind this labeling let's use the waving gesture as an example. The moment immediately before the user starts waving, the information coming from the Kinect is already labeled as a "Waving", so that Adele knows that when the user is at that particular distance and moves his arm at that particular velocity and with that amplitude of movement, he is going to wave at her and she must react properly (waving back in this case). Ideally the features read by the Kinect node are sufficient to distinguish the "waving" from any other gesture and therefore Adele starts reacting before she sees the complete movement. One advantage of this approach is that the classifier will be able to use information that wouldn't be possible to use if explicitly programmed.
 
-We colleted data for various different interactions of the user with the robot, this data was labeled according to what we defined were the correct responses. Table \ref{tab:expected_response} shows the expected response to each of the users movements. The label NOP (No Operation) was used to classify all movements that didn't require a response.
+We colleted data for various different interactions of the user with the robot, this data was labeled according to what we defined were the correct responses. Table~\ref{tab:expected_response} shows the expected response to each of the users movements. The label NOP (No Operation) was used to classify all movements that didn't require a response.
 
 \begin{table}[!h]
 \centering
@@ -81,7 +81,7 @@ To make the system more robust and faster to reach the correct decisions we inte
 
 The idea was to create something similar to a simple markov chain, where each state is the last done action and the transition
 probability is the starting probability for the next state.
-The chain is represented as transition matrix showing the starting probability of a particular action after a specific action. This information is shown in table \ref{transition_matrix}.
+The chain is represented as transition matrix showing the starting probability of a particular action after a specific action. This information is shown in Table~\ref{transition_matrix}.
 
 
 What we implemented in practice is that after an action the probabilities are initialize as the values of one of the rows of this matrix.

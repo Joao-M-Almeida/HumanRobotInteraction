@@ -61,9 +61,30 @@ v_{lin} = \frac{(\omega_{right}+\omega_{left})r}{2} \\
 v_{ang} = \omega = \frac{(\omega_{right}-\omega_{left})r}{2d}
 \end{equation}
 Where $r$ represents the radius of the wheel, and $d$ the distance between wheels.
-As it can be seen in figure \ref{fig:scout_axis} our robot has two degrees of freedom, but since the movement of the robot isn't the main point of this project, we assume movement only in the \textit{x}-axis (forwards and backwards).
+As it can be seen in Figure~\ref{fig:scout_axis} our robot has two degrees of freedom, but since the movement of the robot isn't the main point of this project, we assume movement only in the \textit{x}-axis (forwards and backwards).
 
-The implemented controller receives as an input only the distance in \textit{x} to the goal. Ideally the input would be the final position of the robot in the world map, we leave this as a possible improvement as it would the robot to be tracked by the Kinect Node.
+The implemented controller receives as an input only the distance in \textit{x} to the goal. Ideally the input would be the final position of the robot in the world map, we leave this as a possible improvement as it would require the robot to be tracked by the Kinect Node.
+
+The goal is calculated based on a few informations such as the user position and velocity and the default scout velocity. This is done in order to determine the ideal meeting place of the two. (see Equations~\ref{eq:scout1},~\ref{eq:scout2}~and~\ref{eq:scout3})
+
+\begin{equation}
+\label{eq:scout1}
+v_{scout} \times t + v_{user} \times t = d_{total} 
+\end{equation}
+\begin{equation}
+\label{eq:scout2}
+\left\{
+\begin{array}{l}
+t = \frac{d_{total}}{v_{scout} + v_{user}}\\
+d_{scout} = v_{scout} \times t
+\end{array}
+\right.
+\end{equation}
+\begin{equation}
+\label{eq:scout3}
+d_{scout} = \frac{d_{total}}{v_{scout} + v_{user}} \times v_{scout}
+\end{equation}
+
 
 \begin{figure}[!ht]
     \centering
