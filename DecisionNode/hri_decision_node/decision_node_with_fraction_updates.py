@@ -27,10 +27,10 @@ import tf
 
 alive = True
 n_cmds = 7
-threshold = 0.5
+threshold = 0.3
 default_prob = 1.0/n_cmds
 done = 1
-increment = 0.3
+increment = 0.8
 
 rpy = [0.0, 0.0, 0.0]
 scout_x = 0.0
@@ -94,6 +94,10 @@ def do_go():
     msg.x=0.5
     my_lock.release()
     scout_pub.publish(msg);
+    time.sleep(1)
+    rospy.loginfo("Executed")
+    done = 1
+    initialize_cmd_prob()
 
 def do_go_back():
     rospy.loginfo("             Executing: GO BACK")
@@ -287,12 +291,11 @@ def new_feature(feature_str):
     predicted_action_probabilities = classf.predict_proba(new_sample)
     classes = classf.classes_
     rospy.loginfo("Predicted probabilities: " + str(predicted_action_probabilities))
-    classes = classf.classes_
-    rospy.loginfo("Predicted probabilities: " + str(predicted_action_probabilities))
     for cmd in xrange(0, classes.size):
-        rospy.loginfo("Increment: " +str(increment*predicted_action_probabilities[0][cmd]))
+        #rospy.loginfo("Increment: " +str(increment*predicted_action_probabilities[0][cmd]))
         commands[classes[cmd]] = commands[classes[cmd]] + increment*predicted_action_probabilities[0][cmd]
     normallize_cmd_prob()
+    rospy.loginfo("Commands :" + str(commands))
 
 
 def goodbye():

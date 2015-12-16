@@ -94,6 +94,9 @@ def do_go():
     msg.x=0.5
     my_lock.release()
     scout_pub.publish(msg);
+    time.sleep(3)
+    rospy.loginfo("Executed")
+    done = 1
 
 def do_go_back():
     rospy.loginfo("             Executing: GO BACK")
@@ -109,10 +112,10 @@ def do_go_back():
 
     scout_pub.publish(msg);
 
-    time.sleep(1)
+    time.sleep(3)
     rospy.loginfo("Executed")
     done = 1
-    initialize_cmd_prob()
+    #initialize_cmd_prob()
 
 
 def train_classifier():

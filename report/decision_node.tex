@@ -4,6 +4,22 @@ The Decision Node is the central block of the implemented system and the main fo
 The decision process we implemented is based on a machine learning approach. Based on the assumptions made in the Introduction we chose a system that would learn the most common sequences of gestures of a user and their appropriate response by the robot. Based on this knowledge the decision node would then for each incoming sample data from the Kinect predict
 
 
+\begin{table*}[t]
+\centering
+\caption{Transition Matrix}
+\label{transition_matrix}
+\begin{tabular}{|l|ccccccc|}
+\hline
+ & \multicolumn{1}{c|}{\textbf{NOP}} & \multicolumn{1}{c|}{\textbf{Wave}} & \multicolumn{1}{c|}{\textbf{High-5}} & \multicolumn{1}{c|}{\textbf{Low-5}} & \multicolumn{1}{c|}{\textbf{Go}} & \multicolumn{1}{c|}{\textbf{Grab}} & \textbf{Return} \\ \hline
+\textbf{NOP} & 1/7 & 1/7 & 1/7 & 1/14 & 1/7 & 3/14 & 1/4 \\ \cline{1-1}
+\textbf{Wave} & 1/7 & 0 & 0 & 1/7 & 3/7 & 2/7 & 0 \\ \cline{1-1}
+\textbf{High-5} & 1/6 & 1/6 & 0 & 1/6 & 1/6 & 1/6 & 1/6 \\ \cline{1-1}
+\textbf{Low-5} & 2/7 & 0 & 0 & 0 & 0 & 2/7 & 3/7 \\ \cline{1-1}
+\textbf{Go} & 1/14 & 0 & 1/7 & 1/7 & 0 & 3/7 & 3/14 \\ \cline{1-1}
+\textbf{Grab} & 2/7 & 0 & 1/7 & 1/7 & 0 & 0 & 3/7 \\ \cline{1-1}
+\textbf{Return} & 1/6 & 1/6 & 1/6 & 1/6 & 1/6 & 1/6 & 0 \\ \hline
+\end{tabular}
+\end{table*}
 
 For this approach we needed a way to generate labeled data for our classifier, so what we implemented was getting the outputs of the kinect node and saving them to a dataset with the labels we gave by hand.
 
@@ -67,21 +83,5 @@ The idea was to create something similar to a simple markov chain, where each st
 probability is the starting probability for the next state.
 The chain is represented as transition matrix showing the starting probability of a particular action after a specific action. This information is shown in table \ref{transition_matrix}.
 
-\begin{table*}[t]
-\centering
-\caption{Transition Matrix}
-\label{transition_matrix}
-\begin{tabular}{|l|ccccccc|}
-\hline
- & \multicolumn{1}{c|}{\textbf{NOP}} & \multicolumn{1}{c|}{\textbf{Wave}} & \multicolumn{1}{c|}{\textbf{High-5}} & \multicolumn{1}{c|}{\textbf{Low-5}} & \multicolumn{1}{c|}{\textbf{Go}} & \multicolumn{1}{c|}{\textbf{Grab}} & \textbf{Return} \\ \hline
-\textbf{NOP} & 1/7 & 1/7 & 1/7 & 1/14 & 1/7 & 3/14 & 1/4 \\ \cline{1-1}
-\textbf{Wave} & 1/7 & 0 & 0 & 1/7 & 3/7 & 2/7 & 0 \\ \cline{1-1}
-\textbf{High-5} & 1/6 & 1/6 & 0 & 1/6 & 1/6 & 1/6 & 1/6 \\ \cline{1-1}
-\textbf{Low-5} & 2/7 & 0 & 0 & 0 & 0 & 2/7 & 3/7 \\ \cline{1-1}
-\textbf{Go} & 1/14 & 0 & 1/7 & 1/7 & 0 & 3/7 & 3/14 \\ \cline{1-1}
-\textbf{Grab} & 2/7 & 0 & 1/7 & 1/7 & 0 & 0 & 3/7 \\ \cline{1-1}
-\textbf{Return} & 1/6 & 1/6 & 1/6 & 1/6 & 1/6 & 1/6 & 0 \\ \hline
-\end{tabular}
-\end{table*}
 
 What we implemented in practice is that after an action the probabilities are initialize as the values of one of the rows of this matrix.
